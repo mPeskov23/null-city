@@ -1,0 +1,17 @@
+# Environment & Secrets
+.env
+
+# Local database & TLS certificates
+/data/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Standalone build artifact
+NULL-CITY.html
+
+# OS files
+.DS_Store
+Thumbs.db
