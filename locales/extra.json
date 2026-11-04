@@ -1,0 +1,110 @@
+{
+  "Language": [
+    "Language",
+    "Idioma"
+  ],
+  "ОТКРЫТ": [
+    "OPEN",
+    "ABIERTO"
+  ],
+  "ЗАКРЫТ": [
+    "LOCKED",
+    "CERRADO"
+  ],
+  "mixed": [
+    "Mixed",
+    "Mixto"
+  ],
+  "network": [
+    "Networks",
+    "Redes"
+  ],
+  "security": [
+    "Security",
+    "Seguridad"
+  ],
+  "Мастерская": [
+    "Workshop",
+    "Taller"
+  ],
+  "Статус сервера": [
+    "Server status",
+    "Estado del servidor"
+  ],
+  "Проверка базы данных и автоматических резервных копий. Данные обновляются каждые 30 секунд.": [
+    "Database and automatic backup checks. Updates every 30 seconds.",
+    "Comprobación de la base de datos y de las copias automáticas. Se actualiza cada 30 segundos."
+  ],
+  "Проверяем состояние…": [
+    "Checking status…",
+    "Comprobando estado…"
+  ],
+  "База данных": [
+    "Database",
+    "Base de datos"
+  ],
+  "Резервные копии": [
+    "Backups",
+    "Copias de seguridad"
+  ],
+  "Последняя проверенная копия": [
+    "Last verified backup",
+    "Última copia verificada"
+  ],
+  "Период копирования": [
+    "Backup interval",
+    "Intervalo de copias"
+  ],
+  "Количество хранимых копий": [
+    "Retained copies",
+    "Copias conservadas"
+  ],
+  "Копии проверяются на целостность и связи данных. Они находятся на сервере; для защиты от потери диска оператору нужна отдельная внешняя копия.": [
+    "Backups are checked for integrity and relationships. They are stored on the server; the operator needs a separate off-site copy to protect against disk loss.",
+    "Se comprueban la integridad y las relaciones de las copias. Se guardan en el servidor; el responsable necesita una copia externa para protegerse ante la pérdida del disco."
+  ],
+  "Работает": [
+    "Operational",
+    "Operativo"
+  ],
+  "Требует внимания": [
+    "Needs attention",
+    "Requiere atención"
+  ],
+  "Первое копирование": [
+    "First backup in progress",
+    "Primera copia en curso"
+  ],
+  "Не включено": [
+    "Disabled",
+    "Desactivado"
+  ],
+  "Ошибка": [
+    "Error",
+    "Error"
+  ],
+  "Для проверки открой HTTPS-версию сервера.": [
+    "Open the HTTPS server version to check its status.",
+    "Abre la versión HTTPS del servidor para comprobar su estado."
+  ],
+  "Не удалось получить состояние сервера.": [
+    "Could not retrieve server status.",
+    "No se pudo obtener el estado del servidor."
+  ],
+  "Копия ещё не создана": [
+    "No backup created yet",
+    "Aún no se ha creado una copia"
+  ],
+  "Сервер недоступен": [
+    "Server unavailable",
+    "Servidor no disponible"
+  ],
+  "Открыть HTTPS-клуб →": [
+    "Open HTTPS club →",
+    "Abrir club HTTPS →"
+  ],
+  "Сервер не ответил вовремя. Проверь соединение и повтори попытку.": [
+    "The server did not respond in time. Check your connection and try again.",
+    "El servidor no respondió a tiempo. Comprueba tu conexión e inténtalo de nuevo."
+  ]
+}

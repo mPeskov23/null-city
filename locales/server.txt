@@ -1,0 +1,66 @@
+Unknown save version.|Versión de partida desconocida.
+Invalid case sequence.|Secuencia de casos incorrecta.
+Invalid wallet.|Saldo incorrecto.
+Notes are too long.|Las notas son demasiado largas.
+Invalid appearance.|Apariencia incorrecta.
+Invalid gender.|Género incorrecto.
+Invalid hairstyle.|Peinado incorrecto.
+Save is too large.|La partida es demasiado grande.
+Method or resource not found.|Método o recurso no encontrado.
+Too many requests. Please wait.|Demasiadas solicitudes. Espera un momento.
+Field |Campo 
+: length from |: longitud de 
+ to | a 
+ characters.| caracteres.
+Invalid numeric value: |Valor numérico incorrecto: 
+Invalid XP.|Experiencia incorrecta.
+Invalid color.|Color incorrecto.
+Request must originate from the application.|La solicitud debe proceder de la aplicación.
+JSON required.|Se requiere JSON.
+Request size exceeded.|Solicitud demasiado grande.
+JSON object required.|Se requiere un objeto JSON.
+Sign in to your account.|Inicia sesión en tu cuenta.
+Invalid email.|Email incorrecto.
+Password: 12–128 characters.|Contraseña: 12–128 caracteres.
+Page not found.|Página no encontrada.
+Invalid request length.|Longitud de solicitud incorrecta.
+Invalid JSON.|JSON incorrecto.
+Invalid email or password.|Email o contraseña incorrectos.
+Avatar is too large.|El avatar es demasiado grande.
+Avatar not found.|Avatar no encontrado.
+This is your profile.|Este es tu perfil.
+Room not found.|Sala no encontrada.
+First arena|Primera arena
+Five correct decisions|Cinco decisiones correctas
+Shift winner|Ganador del turno
+Method not supported.|Método no compatible.
+Operation conflicts with existing data.|La operación entra en conflicto con los datos existentes.
+Server error. Try again later.|Error del servidor. Inténtalo más tarde.
+Upload PNG/JPEG up to 120 KB and 4 megapixels.|Sube PNG/JPEG de hasta 120 KB y 4 megapíxeles.
+Invalid page number.|Número de página incorrecto.
+Unknown topic.|Tema desconocido.
+Room is full or the match has started.|La sala está llena o la partida ha comenzado.
+Match already started.|La partida ya ha comenzado.
+Specify ready status.|Indica si estás listo.
+Spectators do not occupy team slots.|Los espectadores no ocupan plazas del equipo.
+An active match is saved for reconnection. Return to it from the list.|Una partida iniciada se conserva para reconectar. Vuelve a ella desde la lista.
+Finish the match first.|Termina primero la partida.
+Rematches are for participants.|La revancha es para los participantes.
+Only the host can start the match.|Solo el anfitrión puede iniciar la partida.
+At least two players in a waiting room are required.|Se necesitan al menos dos jugadores en una sala en espera.
+All participants must confirm they are ready.|Todos los participantes deben confirmar que están listos.
+Round already ended.|La ronda ya ha terminado.
+Spectators cannot use abilities.|Los espectadores no pueden usar habilidades.
+Pulse already used.|Pulso ya utilizado.
+Answer already accepted.|Respuesta ya aceptada.
+This round has already ended.|Esta ronda ya ha terminado.
+Spectators cannot submit answers.|Los espectadores no pueden enviar respuestas.
+Operator|Operador
+Analyst|Analista
+Network keeper|Guardián de la red
+Save changed in another tab. Load the latest version first.|La partida cambió en otra pestaña. Carga primero la versión más reciente.
+Night shift / quick match|Turno de noche / partida rápida
+Rematch already started or closed.|La revancha ya ha comenzado o está cerrada.
+Rematch is full.|La revancha está llena.
+A server save already exists. Load it first.|Ya existe una partida en el servidor. Cárgala primero.
+Rematch / |Revancha / 

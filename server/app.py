@@ -22,10 +22,16 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, parse_qs
 from PIL import Image, UnidentifiedImageError
+try:
+    from server.recovery import BackupService
+except ModuleNotFoundError:
+    from recovery import BackupService
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = Path(os.environ.get('DATABASE_PATH', ROOT / 'data/nullcity.sqlite3'))
 ORIGIN = os.environ.get('PUBLIC_ORIGIN', 'https://localhost:8443').rstrip('/')
+ALLOWED_ORIGINS = {o.strip().rstrip('/') for o in os.environ.get('ALLOWED_ORIGINS', '').split(',') if o.strip()}
+if ORIGIN: ALLOWED_ORIGINS.add(ORIGIN)
 QUESTIONS = json.loads((ROOT/'server/questions.json').read_text())
 CHANGES = threading.Condition()
 REVISION = 0
@@ -33,6 +39,8 @@ HASH_SLOTS = threading.BoundedSemaphore(2)
 RATE_LOCK = threading.Lock()
 RATES = OrderedDict()
 SESSION_TTL = 86400
+BACKUPS = None
+STARTED = time.monotonic()
 
 class ApiError(Exception):
     def __init__(self, status, message): self.status, self.message = status, message
@@ -156,7 +164,11 @@ class Handler(BaseHTTPRequestHandler):
         for k,v in {'Content-Type':mime,'Content-Length':str(len(payload)),'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",'Strict-Transport-Security':'max-age=31536000','Permissions-Policy':'camera=(), microphone=(), geolocation=()',**(headers or {})}.items(): self.send_header(k,v)
         self.end_headers();self.wfile.write(payload)
     def body(self):
-        if self.headers.get('Origin')!=ORIGIN or self.headers.get('X-NullCity')!='1': raise ApiError(403,'Запрос должен исходить из приложения.')
+        origin = (self.headers.get('Origin') or '').rstrip('/')
+        host = self.headers.get('Host')
+        host_no_port = host.split(':')[0] if host else ''
+        origin_ok = origin in ALLOWED_ORIGINS or (bool(host) and (origin == f'https://{host}' or origin == f'https://{host_no_port}'))
+        if not origin_ok or self.headers.get('X-NullCity')!='1': raise ApiError(403,'Запрос должен исходить из приложения.')
         if self.headers.get('Content-Type','').split(';')[0]!='application/json': raise ApiError(415,'Нужен JSON.')
         try: size=int(self.headers.get('Content-Length','0'))
         except ValueError: raise ApiError(400,'Неверная длина запроса.')
@@ -188,6 +200,14 @@ class Handler(BaseHTTPRequestHandler):
                 return self.static(path)
             rate(('all',self.client_address[0]),300,60)
             data=self.body() if method!='GET' else {}
+            if path=='/api/status' and method=='GET':
+                database_ok=True
+                try:
+                    with db() as c: database_ok=c.execute('PRAGMA quick_check').fetchone()[0]=='ok'
+                except sqlite3.Error: database_ok=False
+                backup=BACKUPS.status() if BACKUPS else {'status':'disabled'}
+                ready=database_ok and backup['status']=='ok'
+                return self.respond(200 if ready else 503,{'status':'ok' if ready else 'degraded','database':'ok' if database_ok else 'failed','backups':backup,'uptimeSeconds':int(time.monotonic()-STARTED)})
             if path=='/api/health' and method=='GET':
                 with db() as c: c.execute('SELECT 1')
                 return self.respond(200,{'status':'ok'})
@@ -198,7 +218,7 @@ class Handler(BaseHTTPRequestHandler):
                     c.commit();return self.events(uid)
                 result=self.api(c,u,method,path,data)
             if method!='GET': changed()
-            self.respond(200,result)
+            self.respond(200,result, {'Set-Cookie': '__Host-nullcity=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'} if path=='/api/logout' and method=='POST' else None)
         except ApiError as e: self.respond(e.status,{'error':e.message})
         except sqlite3.IntegrityError: self.respond(409,{'error':'Операция конфликтует с существующими данными.'})
         except (BrokenPipeError,ConnectionResetError,TimeoutError,ssl.SSLEOFError,ssl.SSLZeroReturnError): pass
@@ -403,7 +423,7 @@ class Handler(BaseHTTPRequestHandler):
                 c.execute('UPDATE users SET seen=? WHERE id=?',(now(),uid))
             self.wfile.write(f'data: {seen}\n\n'.encode());self.wfile.flush()
     def static(self,path):
-        allowed={'/':'index.html','/hub.html':'hub.html','/privacy.html':'privacy.html','/terms.html':'terms.html'}
+        allowed={'/':'index.html','/hub.html':'hub.html','/privacy.html':'privacy.html','/terms.html':'terms.html','/status.html':'status.html'}
         if path.startswith('/src/') and re.fullmatch(r'/src/[a-zA-Z0-9_.-]+\.(js|mjs|css)',path): name=path[1:]
         elif re.fullmatch(r'/assets/nulls/(bg-room-svg|char-(?:01-desert|02-ocean|03-ice|04-lava|05-cyber|06-gas|07-crystal|08-jungle|09-void|10-hive))\.svg',path): name=path[1:]
         elif re.fullmatch(r'/assets/city/(terrain|buildings|long_buildings|vehicles_game|characters_game|parks)\.png',path): name=path[1:]
@@ -416,7 +436,23 @@ class Handler(BaseHTTPRequestHandler):
 if __name__=='__main__':
     init_db()
     cert=os.environ.get('TLS_CERT',str(ROOT/'data/tls/cert.pem'));key=os.environ.get('TLS_KEY',str(ROOT/'data/tls/key.pem'))
-    server=ThreadingHTTPServer((os.environ.get('BIND','127.0.0.1'),int(os.environ.get('PORT','8443'))),Handler)
+    bind_host=os.environ.get('BIND','0.0.0.0')
+    port=int(os.environ.get('PORT','8443'))
+    server=ThreadingHTTPServer((bind_host,port),Handler)
     context=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);context.minimum_version=ssl.TLSVersion.TLSv1_2;context.load_cert_chain(cert,key)
     server.socket=context.wrap_socket(server.socket,server_side=True)
-    print('NULL CITY HTTPS ready',flush=True);server.serve_forever()
+    BACKUPS=BackupService(DB,DB.parent/'automatic-backups',os.environ.get('BACKUP_INTERVAL_SECONDS','21600'),os.environ.get('BACKUP_RETAIN','7'))
+    BACKUPS.start()
+    print(f'NULL CITY HTTPS ready on {bind_host}:{port}',flush=True)
+    print(f'  Local access:  https://localhost:{port}/',flush=True)
+    try:
+        import socket
+        s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        s.connect(('10.255.255.255',1))
+        lan_ip=s.getsockname()[0]
+        s.close()
+        if lan_ip and not lan_ip.startswith('127.'):
+            print(f'  LAN access:    https://{lan_ip}:{port}/',flush=True)
+    except Exception: pass
+    try: server.serve_forever()
+    finally: BACKUPS.stop();server.server_close()

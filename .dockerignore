@@ -1,0 +1,9 @@
+.git
+.env
+.env.*
+data
+backups
+tmp
+node_modules
+__pycache__
+*.pdf

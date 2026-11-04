@@ -37,7 +37,7 @@ function initSignalRoom(api){
   if(!open){scene(intro.classList.contains('hidden')?'WORLD':'TAPE_ROOM');return;}
   scene(modal.querySelector('.workspace')?'TERMINAL':modal.querySelector('.journal-grid')?'JOURNAL':'DIALOGUE');
   const body=modal.querySelector('.dialogue-body');if(body&&!body.querySelector('.story-portrait')){
-   const title=modal.querySelector('h2')?.textContent||'',who=/Юна|Юне|орбиты/.test(title)?1:/Эхо|Частота|Голос,/.test(title)?2:/Иво|Архив|Двенадцать|Ключ/.test(title)?3:0;
+   const title=modal.querySelector('h2')?.dataset.storyTitle||modal.querySelector('h2')?.textContent||'',who=/Юна|Юне|орбиты/.test(title)?1:/Эхо|Частота|Голос,/.test(title)?2:/Иво|Архив|Двенадцать|Ключ/.test(title)?3:0;
    const portrait=make('div','story-portrait');portrait.style.setProperty('--face',who);portrait.setAttribute('role','img');portrait.setAttribute('aria-label',['Мара','Юна','Эхо','Иво'][who]);body.prepend(portrait);
   }
  }).observe(document.querySelector('#modal'),{childList:true,subtree:true,attributes:true,attributeFilter:['class']});

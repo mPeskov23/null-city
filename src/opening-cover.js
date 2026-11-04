@@ -12,7 +12,7 @@
   setTimeout(()=>{cover.remove();app.inert=false;window.dispatchEvent(new Event('null-city-cover-entered'));document.getElementById('start')?.focus({preventScroll:true});},reduce?0:720);
  }
  function enter(e){e.preventDefault();e.stopPropagation();requested=true;
-  if(!ready)prompt.textContent='[CONNECTING TO THE CITY…]';finish();
+  if(!ready)prompt.textContent=globalThis.NCI18n.coverText('[CONNECTING TO THE CITY…]');finish();
  }
  cover.addEventListener('click',enter);
  cover.addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key))enter(e);else e.stopPropagation();});

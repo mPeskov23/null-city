@@ -20,10 +20,9 @@ function initGameMenu(api,controls){
   if(account){d.append(make('p',account.name,'menu-lead'));const a=make('a','Профиль, друзья и результаты →','menu-link');a.href='hub.html';d.append(a,button('Выйти из аккаунта',async()=>{try{await request('logout',{});account=null;login.textContent='Войти / Регистрация';d.close();}catch(e){d.append(make('p',e.message));}}));return;}
   if(location.protocol!=='https:'){
    d.append(make('p','Этот адрес открывает только файлы игры. Регистрация и вход работают на защищённом сервере.','menu-note'));
-   if(['localhost','127.0.0.1'].includes(location.hostname)){
-    const online=make('a','Перейти к регистрации / входу →','primary menu-link');online.href='https://localhost:8443/';d.append(online);
-    d.append(make('p','Если браузер сообщает о недоверенном сертификате, сначала настрой доверие к локальному сертификату или используй сервер с доверенным HTTPS-сертификатом.','menu-note'));
-   }else d.append(make('p','Открой игру по HTTPS-адресу сервера авторизации.','menu-note'));
+   const targetHost=location.hostname||'localhost';
+   const online=make('a','Перейти к регистрации / входу →','primary menu-link');online.href='https://'+targetHost+':8443/';d.append(online);
+   d.append(make('p','Если браузер сообщает о недоверенном сертификате, подтверди исключение безопасности для адреса сервера или настрой доверие к сертификату.','menu-note'));
    return;
   }
   const form=make('form');for(const [name,label,type,min,max]of [['email','Email','email',3,254],['password','Пароль · 12–128 символов','password',12,128],...(register?[['name','Имя оператора','text',2,32]]:[])]){const l=make('label',label),i=make('input');i.name=name;i.type=type;i.minLength=min;i.maxLength=max;i.required=true;i.autocomplete=name==='password'?(register?'new-password':'current-password'):name==='name'?'nickname':'email';l.append(i);form.append(l);}

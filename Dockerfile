@@ -6,8 +6,9 @@ RUN useradd --uid 10001 --create-home nullcity && mkdir -p /app/data && chown nu
 COPY --chown=nullcity:nullcity server ./server
 COPY --chown=nullcity:nullcity src ./src
 COPY --chown=nullcity:nullcity assets ./assets
-COPY --chown=nullcity:nullcity index.html hub.html privacy.html terms.html ./
+COPY --chown=nullcity:nullcity index.html hub.html privacy.html terms.html status.html ./
 COPY --chown=nullcity:nullcity deploy ./deploy
+COPY --chown=nullcity:nullcity scripts ./scripts
 RUN chmod +x deploy/entrypoint.sh
 USER nullcity
 EXPOSE 8443

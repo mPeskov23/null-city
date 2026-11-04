@@ -2,12 +2,16 @@ services:
   nullcity:
     build: .
     ports:
-      - "127.0.0.1:${PORT:-8443}:8443"
+      - "${BIND:-0.0.0.0}:${PORT:-8443}:8443"
     environment:
       BIND: 0.0.0.0
       PORT: 8443
       PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-https://localhost:8443}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
+      HOST_IP: ${HOST_IP:-}
       DATABASE_PATH: /app/data/nullcity.sqlite3
+      BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-21600}
+      BACKUP_RETAIN: ${BACKUP_RETAIN:-7}
     volumes:
       - city-data:/app/data
     restart: unless-stopped

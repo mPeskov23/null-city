@@ -1,0 +1,92 @@
+Night shift|Turno de noche
+Your first work outfit. Always available.|Tu primer uniforme. Siempre disponible.
+Pink noise|Ruido rosa
+A crimson jacket, bright hair and glowing details.|Una chaqueta carmesí, pelo brillante y detalles luminosos.
+Solar trail|Rastro solar
+Warm amber for the rainiest nights.|Ámbar cálido para las noches más lluviosas.
+Network phantom|Fantasma de la red
+A purple jacket and a contrasting neon visor.|Una chaqueta violeta y un visor de neón en contraste.
+White protocol|Protocolo blanco
+Light clothing with cool blue accents.|Ropa clara con detalles azules fríos.
+Outfit not found.|Atuendo no encontrado.
+Not enough XP. Complete a case or help residents.|No tienes suficiente XP. Completa un caso o ayuda a los vecinos.
+TICKET 004 / MARA\nHouse 04: portal unavailable. Resident: NULL.\nCheck the network. First find out what works.\nPortal server: 10.24.8.20; gateway: 10.24.4.1.|INCIDENCIA 004 / MARA\nEdificio 04: portal no disponible. Residente: NULL.\nComprueba la red. Primero averigua qué funciona.\nServidor del portal: 10.24.8.20; puerta de enlace: 10.24.4.1.
+\n# Expected backup network values:\n# gateway=10.61.7.1\n# dns=10.61.7.53\n# archive.city=10.61.9.40|\n# Valores previstos de la red de respaldo:\n# gateway=10.61.7.1\n# dns=10.61.7.53\n# archive.city=10.61.9.40
+\n# Expected district DNS: 10.24.4.53\n# Last change: ghost-17 / 03:17|\n# DNS previsto del distrito: 10.24.4.53\n# Último cambio: ghost-17 / 03:17
+NAVIGATION\npwd · ls [folder] · cat <file>\nNETWORK\nip addr · ip route · ping <address>\nnslookup <name> · curl <name or URL>\nINVESTIGATION\ncp <source> <copy> · grep <text> <file>\nTRAINING COMMANDS\nset dns <IP> · set gateway <IP>\nconnections · firewall list\nfirewall block <IP> · firewall unblock <IP>\nevidence add <identifier>\nclear — clear the screen\nEverything runs inside the model, without external networking.|NAVEGACIÓN\npwd · ls [carpeta] · cat <archivo>\nRED\nip addr · ip route · ping <dirección>\nnslookup <nombre> · curl <nombre o URL>\nINVESTIGACIÓN\ncp <origen> <copia> · grep <texto> <archivo>\nCOMANDOS DE PRÁCTICA\nset dns <IP> · set gateway <IP>\nconnections · firewall list\nfirewall block <IP> · firewall unblock <IP>\nevidence add <identificador>\nclear — limpiar pantalla\nTodo se ejecuta dentro del modelo, sin red externa.
+(empty folder)|(carpeta vacía)
+Folder not found. Try ls / or ls /evidence.|Carpeta no encontrada. Prueba ls / o ls /evidence.
+File not found. ls lists the folder contents.|Archivo no encontrado. ls muestra el contenido de la carpeta.
+Could not resolve name. Check DNS and routing.|No se pudo resolver el nombre. Comprueba DNS y las rutas.
+No reply. Only training network devices exist in this model.|Sin respuesta. El modelo solo contiene dispositivos de la red de práctica.
+No reply. Check the route and firewall rules.|Sin respuesta. Comprueba la ruta y las reglas del cortafuegos.
+Usage: nslookup portal.city|Uso: nslookup portal.city
+: timeout\nConfigured DNS did not respond. Check /etc/network.conf.|: timeout\nEl DNS configurado no responde. Comprueba /etc/network.conf.
+NXDOMAIN: no such name in the training zone.|NXDOMAIN: ese nombre no existe en la zona de práctica.
+Network unreachable. Check ip route.|Red inaccesible. Comprueba ip route.
+Training service not found.|Servicio de práctica no encontrado.
+Connection blocked by firewall. Check firewall list.|Conexión bloqueada por el cortafuegos. Comprueba firewall list.
+HTTP/1.1 200 OK\nNULL CITY / City portal\nConnection: restored\nResident YUNA: |HTTP/1.1 200 OK\nNULL CITY / Portal municipal\nConexión: restaurada\nResidente YUNA: 
+NULL / record requires recovery|NULL / el registro requiere recuperación
+HTTP/1.1 200 OK\nBackup archive / record YUNA-004 found\nControl record: ACTIVE\nCopy ready for recovery.|HTTP/1.1 200 OK\nArchivo de respaldo / registro YUNA-004 encontrado\nRegistro de control: ACTIVE\nCopia lista para restaurar.
+Training command: set dns <IPv4> or set gateway <IPv4>.|Comando de práctica: set dns <IPv4> o set gateway <IPv4>.
+Configuration is available at the house terminal and backup node.|La configuración está disponible en el terminal del edificio y el nodo de respaldo.
+The primary gateway works. Investigate DNS in this case.|La puerta de enlace principal funciona. Investiga DNS en este caso.
+Setting |Configuración 
+ saved. Verify with diagnostic commands.| guardada. Verifica el resultado con comandos de diagnóstico.
+Evidence copying is available in the archive.|Puedes copiar pruebas en el archivo.
+Source not found.|Origen no encontrado.
+Save the log in the case folder: /evidence/access.log.|Guarda el registro en la carpeta del caso: /evidence/access.log.
+This case requires the original log /var/log/access.log.|Este caso necesita el registro original /var/log/access.log.
+Copy saved: /evidence/access.log\nOriginal unchanged.|Copia guardada: /evidence/access.log\nOriginal sin cambios.
+Usage: grep ghost-17 /evidence/access.log|Uso: grep ghost-17 /evidence/access.log
+No matches.|Sin coincidencias.
+Specify the identifier you found: evidence add <name>.|Indica el identificador encontrado: evidence add <nombre>.
+First save the log and find the event in the saved copy.|Primero guarda el registro y busca el evento en la copia.
+EVIDENCE E-01: ghost-17 → dns.change → registry.export\nSource: /evidence/access.log, 03:17–03:18\nThe account owner's identity is not established.|PRUEBA E-01: ghost-17 → dns.change → registry.export\nOrigen: /evidence/access.log, 03:17–03:18\nNo se ha identificado al titular de la cuenta.
+ / portal\n10.24.4.18 → 203.0.113.66:443    | / portal\n10.24.4.18 → 203.0.113.66:443    
+ / registry.export\nExternal export is not part of the normal configuration.| / registry.export\nLa configuración normal no contempla una exportación externa.
+No blocks|Sin bloqueos
+Rules can be changed at the district gateway.|Las reglas se cambian en la puerta de enlace del distrito.
+Rule |Regla 
+\nCheck connections and the portal.|\nComprueba connections y el portal.
+DENY added|DENY añadido
+removed|eliminada
+Unknown command: |Comando desconocido: 
+. Type help for a list. Model commands do not execute on your computer.|. Escribe help para ver la lista. Los comandos del modelo no se ejecutan en tu ordenador.
+TRAINING MODEL / |MODELO DE PRÁCTICA / 
+\nCommands only work inside this mission.|\nLos comandos solo funcionan dentro de esta misión.
+FROM: Mara <mara@nexus-support.example>\nREPLY: keys@nexus-support.example\n“Send the registry key. Immediately. This is Mara.”\nAttachment: voice recording. Ticket: relay-17.|FROM: Mara <mara@nexus-support.example>\nREPLY: keys@nexus-support.example\n«Envíame la clave del registro. Inmediatamente. Soy Mara».\nAdjunto: grabación de voz. Incidencia: relay-17.
+Trusted local entry: MARA / mara@repair.city\nSaved channel: call mara\nContact added before the incident.|Entrada local de confianza: MARA / mara@repair.city\nCanal guardado: call mara\nContacto añadido antes del incidente.
+First find the contact in the trusted directory: contacts list.|Primero busca el contacto en la agenda de confianza: contacts list.
+MARA / saved channel: “I did not ask for a key. Save the message and isolate it. Voices can be forged.”|MARA / canal guardado: «No pedí ninguna clave. Guarda el mensaje y aíslalo. Las voces se pueden falsificar».
+Examine the message and verify the request independently.|Examina el mensaje y verifica la petición por otro canal.
+Message isolated; original preserved. Key not disclosed. Evidence E-02: relay-17.|Mensaje aislado; original conservado. Clave no revelada. Prueba E-02: relay-17.
+relay-17 / role: |relay-17 / rol: 
+\nActive old sessions: |\nSesiones antiguas activas: 
+\nTask: delivery. courier: delivery.read; administrator: delivery.read + registry.delete|\nTarea: reparto. courier: delivery.read; administrator: delivery.read + registry.delete
+First inspect current permissions: access show.|Primero inspecciona los permisos actuales: access show.
+Role courier assigned. Old sessions still need to be revoked.|Rol courier asignado. Aún hay que revocar las sesiones antiguas.
+Restrict the role first, or a new login will grant full access again.|Limita primero el rol o un nuevo inicio de sesión volverá a conceder acceso completo.
+3 old sessions revoked. Run access test.|3 sesiones antiguas revocadas. Ejecuta access test.
+FAIL: excessive permissions or old sessions remain active.|FAIL: siguen activos permisos excesivos o sesiones antiguas.
+night-03 / 03:20 / after incident / 12 records claimed\nnight-02 / 02:00 / before incident / 12 records claimed\nExpected SHA-256 values are in a separate trusted manifest.|night-03 / 03:20 / tras el incidente / declara 12 registros\nnight-02 / 02:00 / antes del incidente / declara 12 registros\nLos SHA-256 esperados están en un manifiesto de confianza separado.
+FAIL: SHA-256 differs from the trusted manifest. Newer does not mean intact.|FAIL: SHA-256 no coincide con el manifiesto de confianza. Más reciente no significa íntegro.
+Inspect the backup list first.|Primero examina la lista de copias.
+PASS: SHA-256 matches the trusted manifest. Data still needs verification after recovery.|PASS: SHA-256 coincide con el manifiesto de confianza. Aún hay que verificar los datos tras restaurarlos.
+Verify the backup first: backup verify night-02.|Primero verifica la copia: backup verify night-02.
+Backup deployed in the test registry. Live database unchanged.|Copia restaurada en el registro de pruebas. Base activa sin cambios.
+Restore the backup in the test environment first.|Primero restaura la copia en el entorno de pruebas.
+PASS: 12/12 records readable; addresses linked to residents; no duplicates.|PASS: 12/12 registros legibles; direcciones vinculadas a residentes; sin duplicados.
+Cannot deploy an unverified recovery.|No se puede poner en servicio una recuperación sin verificar.
+Registry switched. 12 houses ACTIVE. Previous version kept for rollback.|Registro cambiado. 12 edificios ACTIVE. Versión anterior conservada para revertir.
+E-02: forged key request; E-03: excessive relay-17 permissions.\nE-04: NEXUS order and Ivo's signature. 12 houses restored.\nThe copy also contains residents' private addresses — remove before sharing.\nThese data do not establish ghost-17's identity.|E-02: petición falsa de una clave; E-03: permisos excesivos de relay-17.\nE-04: orden de NEXUS y firma de Ivo. 12 edificios recuperados.\nLa copia contiene direcciones privadas: elimínalas antes de compartirla.\nEstos datos no identifican al operador ghost-17.
+Read the package contents first.|Primero lee el contenido del paquete.
+Private addresses removed from the shared copy. Originals remain in the archive.|Direcciones privadas eliminadas de la copia compartida. Originales conservados en el archivo.
+FAIL: the package still contains private addresses.|FAIL: el paquete aún contiene direcciones privadas.
+PASS: evidence preserved; private addresses excluded.\nChoose: publish community — public broadcast; publish engineers — targeted delivery to engineers.|PASS: pruebas conservadas; direcciones privadas excluidas.\nElige: publish community — emisión pública; publish engineers — entrega a los ingenieros.
+Prepare and verify the package copy first.|Primero prepara y verifica la copia del paquete.
+Package already sent. This shift's decision is final.|Paquete ya enviado. La decisión de este turno está tomada.
+BROADCAST: residents receive the evidence. The radio becomes a mutual aid hub.|EMISIÓN: los vecinos reciben las pruebas. La radio se convierte en un punto de ayuda mutua.
+SECURE CHANNEL: engineers receive the evidence. The archive becomes a center for checking other nodes.|CANAL SEGURO: los ingenieros reciben las pruebas. El archivo se convierte en un centro de comprobación de otros nodos.
+Command not found. help lists this mission's commands.|Comando no encontrado. help muestra los comandos de esta misión.

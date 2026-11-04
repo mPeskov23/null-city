@@ -1,0 +1,83 @@
+The online club is available on the HTTPS server. Solo play works separately.|El club en línea está disponible en el servidor HTTPS. La partida individual funciona por separado.
+Request failed.|Error en la solicitud.
+Avatar |Avatar de 
+Avatar unavailable|Avatar no disponible
+Welcome, |Te damos la bienvenida, 
+● Connected|● Conectado
+○ Reconnecting…|○ Reconectando…
+Enter an operator name of 2–32 characters.|Introduce un nombre de operador de 2–32 caracteres.
+Server save #|Partida del servidor n.º 
+No server save yet.|Aún no hay partida en el servidor.
+Profile saved.|Perfil guardado.
+Use PNG/JPEG up to 120 KB.|Usa PNG/JPEG de hasta 120 KB.
+Avatar updated.|Avatar actualizado.
+Default avatar restored.|Avatar predeterminado restaurado.
+Start a solo game first.|Primero inicia una partida individual.
+Saved to server · version |Guardado en el servidor · versión 
+No server save found.|No hay partida guardada en el servidor.
+Replace local progress with the server copy? You can export your current progress first.|¿Reemplazar el progreso local con la copia del servidor? Puedes exportar antes tu progreso actual.
+Loaded. Reopen the city to continue.|Cargado. Vuelve a abrir la ciudad para continuar.
+Night shift operator|Operador del turno de noche
+● Online|● En línea
+○ Offline|○ Sin conexión
+Add friend|Añadir amigo
+Invitation sent or incoming request accepted.|Invitación enviada o solicitud recibida aceptada.
+Page |Página 
+No invitations yet. Find another operator.|Aún no hay invitaciones. Busca a otro operador.
+● Friend online|● Amigo en línea
+Friend offline|Amigo sin conexión
+Invitation sent|Invitación enviada
+Incoming invitation|Invitación recibida
+Accept|Aceptar
+Remove friend|Eliminar amigo
+Cancel / decline|Cancelar / rechazar
+Waiting|En espera
+Match in progress|Partida en curso
+Finished|Finalizada
+Join|Unirse
+Open my match|Abrir mi partida
+Watch|Observar
+Create the first room and invite a friend.|Crea la primera sala e invita a un amigo.
+Back to rooms|Volver a las salas
+Spectator mode. Player answers remain hidden until the match ends.|Modo espectador. Las respuestas se ocultan hasta que termina la partida.
+✓ Ready|✓ Listo
+Waiting for ready|Esperando confirmación
+ pts| puntos
+Confirm you are ready. Then the host starts the shared shift.|Confirma que estás listo. Después, el anfitrión inicia el turno compartido.
++ Open slot|+ Plaza libre
+Not ready|No estoy listo
+✓ I am ready|✓ Estoy listo
+Leave lobby|Salir de la sala
+Take a slot|Ocupar una plaza
+Public room invitation link|Enlace de invitación a la sala pública
+Public room invitation: share this link with a friend.|Invitación a una sala pública: comparte este enlace con un amigo.
+Start shift →|Iniciar turno →
+Room closed. Choose another lobby or quick match.|Sala cerrada. Elige otra sala o una partida rápida.
+Round |Ronda 
+Eliminated: |Descartada: 
+✓ Accepted: |✓ Aceptada: 
+Pulse used|Pulso utilizado
+⚡ Pulse: eliminate one wrong answer|⚡ Pulso: descartar una respuesta incorrecta
+ XP for accuracy| XP por precisión
+Rematch with this team →|Revancha con este equipo →
+Draw|Empate
+Winner: |Ganador: 
+Level |Nivel 
+ arena XP · wins | XP de arena · victorias 
+ · draws | · empates 
+ · losses | · derrotas 
+Operator leaderboard|Clasificación de operadores
+ correct answers / | respuestas correctas / 
+ matches| partidas
+Match history|Historial de partidas
+Match review|Revisión de la partida
+ sec.| s
+Offline preview. Open the HTTPS server version to play with other operators.|Vista previa sin conexión. Abre la versión HTTPS del servidor para jugar con otros operadores.
+Sign in or register to play together.|Inicia sesión o regístrate para jugar en grupo.
+DOSSIER / |EXPEDIENTE / 
+Progress to next level|Progreso hacia el siguiente nivel
+Until next level: |Para el siguiente nivel: 
+✓ Contract complete · +40 XP|✓ Contrato completado · +40 XP
+Daily contract: hold the signal|Contrato diario: mantener la señal
+ correct answers in completed matches. Reward: 40 XP once per UTC day.| respuestas correctas en partidas terminadas. Recompensa: 40 XP una vez por día UTC.
+Missing a day does not reset your level. Story and arena XP are separate.|Faltar un día no reinicia tu nivel. La experiencia de historia y arena es independiente.

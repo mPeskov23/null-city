@@ -1,0 +1,16 @@
+.language-dock{position:fixed;right:max(16px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:100000}
+.language-picker{display:flex!important;align-items:center;gap:8px;width:max-content;max-width:100%;padding:6px 10px;border:1px solid #638b96;background:#0b1727f5;color:#eef4e9;font:12px/1.4 monospace;box-shadow:0 4px 18px #0006;border-radius:5px}
+.language-picker select{width:auto!important;min-width:92px;margin:0!important;padding:6px!important;background:#142537!important;color:#fff!important;border:1px solid #638b96!important;font:inherit;min-height:32px}
+.language-picker select:focus-visible{outline:2px solid #ffca78;outline-offset:3px}
+dialog>.language-picker{margin:14px 0 0 auto}
+body:has(#opening-cover) .language-dock{top:18px}
+@media(max-width:600px){.language-picker{font-size:11px;gap:5px;padding:4px 6px}.language-dock{top:auto;bottom:max(8px,env(safe-area-inset-bottom));right:8px}body:has(#opening-cover) .language-dock{top:12px;bottom:auto}body:has(.language-dock) footer{padding-bottom:60px}}
+
+html[data-scene="WORLD"] .language-dock,html[data-scene="TERMINAL"] .language-dock,html[data-scene="JOURNAL"] .language-dock,html[data-scene="DIALOGUE"] .language-dock{top:76px}
+@media(max-width:600px){html[data-scene] .language-dock{top:auto;bottom:8px}body:has(#opening-cover) .language-dock{top:12px;bottom:auto}}
+
+body:not(:has(#app))>header{padding-right:190px}
+@media(max-width:600px){body:not(:has(#app))>header{padding-right:16px}}
+
+body:has(#modal.open) .language-dock{display:none}
+.modal-card>.language-picker{margin:0 24px 20px auto}

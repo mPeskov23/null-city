@@ -1,4 +1,4 @@
-import {freshState,restoreState,execute,caseReady,OUTFITS,wallet,buyOutfit,storyReward,normalizeAppearance} from './simulator.mjs?v=123';
+import {freshState,restoreState,execute,caseReady,OUTFITS,wallet,buyOutfit,storyReward,normalizeAppearance} from './simulator.mjs?v=124';
 const $=s=>document.querySelector(s);
 const node=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
 const SAVE_KEY='nullcity_nightshift_v1';
@@ -26,7 +26,7 @@ function modal(title,label){
  lastFocus=document.activeElement;game.paused=true;game.keys={};game.path=[];
  const root=$('#modal');root.replaceChildren();root.classList.add('open');
  const card=node('section','modal-card'),head=node('div','modal-head'),titles=node('div');
- titles.append(node('div','micro mint',label));const h=node('h2','',title);h.id='modal-title';titles.append(h);
+ titles.append(node('div','micro mint',label));const h=node('h2','',title);h.id='modal-title';h.dataset.storyTitle=title;titles.append(h);
  const close=node('button','close','×');close.setAttribute('aria-label','Закрыть');close.onclick=closeModal;head.append(titles,close);card.append(head);root.append(card);close.focus();return card;
 }
 function closeModal(){
@@ -100,7 +100,7 @@ function openReport(review=false){
  const feedback=node('div','feedback');feedback.setAttribute('role','status');body.append(feedback);
  body.append(button('Подписать отчёт →',()=>{if(selects.map(s=>s.value).join(',')!=='dns,record,fixed'){feedback.textContent='Проверь выводы по журналу: IP работал, DNS был изменён. Имя учётной записи не доказывает личность владельца. Меры должны сохранять работу города.';return;}if(review){feedback.textContent='✓ Отчёт составлен верно. Основное сохранение не изменено.';return;}model.ending=dest.value;completeCase(q);}));card.append(body);
 }
-function reportText(){return `NULL//CITY — ОТЧЁТ / ГЛАВА 01\n\nИнцидент: потерянный адрес\nПричина: изменён DNS. Сервер был доступен по IP.\nУлика E-01: /evidence/access.log, 03:17–03:18.\nУчётная запись ghost-17: dns.change, registry.export.\nЛичность владельца не установлена.\nМеры: штатный DNS восстановлен; журнал сохранён;\n203.0.113.66 заблокирован; портал проверен; резервный архив доступен.\nЗапись YUNA: восстановлена.\nКопия передана: ${model.ending==='community'?'представителям жителей':'городским инженерам'}.\n\nОсвоенные навыки: терминал, IP, шлюз, DNS, журналы, firewall, отчёт.\nЭто результаты учебной главы, не профессиональная сертификация.\n\nЗаметки оператора:\n${model.notes}`;}
+function reportText(){return globalThis.NCI18n.t(`NULL//CITY — ОТЧЁТ / ГЛАВА 01\n\nИнцидент: потерянный адрес\nПричина: изменён DNS. Сервер был доступен по IP.\nУлика E-01: /evidence/access.log, 03:17–03:18.\nУчётная запись ghost-17: dns.change, registry.export.\nЛичность владельца не установлена.\nМеры: штатный DNS восстановлен; журнал сохранён;\n203.0.113.66 заблокирован; портал проверен; резервный архив доступен.\nЗапись YUNA: восстановлена.\nКопия передана: ${model.ending==='community'?'представителям жителей':'городским инженерам'}.\n\nОсвоенные навыки: терминал, IP, шлюз, DNS, журналы, firewall, отчёт.\nЭто результаты учебной главы, не профессиональная сертификация.\n\nЗаметки оператора:\n`) + model.notes;}
 function download(name,text,type='text/plain'){const url=URL.createObjectURL(new Blob([text],{type}));const a=node('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function openEnding(){
  if(State.done.has('broadcast')){openChapterEnding();return;}
@@ -179,6 +179,7 @@ async function boot(){
  $('#inventory').onclick=openInventory;$('#map-toggle').onclick=()=>{const open=document.documentElement.classList.toggle('map-open');$('#map-toggle').setAttribute('aria-expanded',String(open));};$('#start').onclick=startGame;$('#home').onclick=e=>{e.preventDefault();if($('#modal').classList.contains('open'))closeModal();$('#intro').classList.remove('hidden');game.paused=true;};$('#navigate').onclick=navigateTask;$('#journal').onclick=openJournal;$('#guide').onclick=openGuide;$('#settings').onclick=openSettings;$('#audio').onclick=()=>setAudio(!model.settings.sound);$('#vision').onclick=()=>{game.vision=!game.vision;$('#vision').classList.toggle('on',game.vision);};
  view.onpointerdown=e=>{if(game.paused)return;const r=view.getBoundingClientRect(),target={...game.renderer.screenToWorld((e.clientX-r.left)/scale,(e.clientY-r.top)/scale,game.cam)};const hotspot=(game.world.interactables||[]).find(p=>Math.hypot(p.x-target.x,p.y-target.y)<(game.world.minipixel?5:18));if(hotspot&&Math.hypot(hotspot.x-game.player.x,hotspot.y-game.player.y)<reach()){if(hotspot.kind==='building')enterPlace(hotspot.id);else roomAction(hotspot.action);return;}const site=game.questSites.find(s=>Math.hypot(s.x-target.x,s.y-target.y)<(game.world.minipixel?5:18));if(site?.gate&&Math.hypot(site.x-game.player.x,site.y-game.player.y)<reach()){enterCapitalGate(site.gate);return;}if(site?.capital&&Math.hypot(site.x-game.player.x,site.y-game.player.y)<reach()){openCapitalTerminal();return;}if(site&&Math.hypot(site.x-game.player.x,site.y-game.player.y)<reach()){game.prompt={kind:'questSite',obj:site};if(activeQuest()?.id===site.id)openTerminal(activeQuest());return;}const destination=site?{x:site.x,y:site.y+(game.world.minipixel?0:16)}:hotspot||target;const p=findPath(destination);if(p)game.path=p;view.focus({preventScroll:true});};
  addEventListener('keydown',e=>{
+  if(e.target.closest?.('.language-picker'))return;
   if($('#modal').classList.contains('open')){if(e.key==='Escape'){e.preventDefault();closeModal();}if(e.key==='Tab'){const elements=[...$('#modal').querySelectorAll('button:not(:disabled),input:not([hidden]),textarea,select,summary')].filter(x=>x.getClientRects().length);const first=elements[0],last=elements.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}return;}
   if(!$('#intro').classList.contains('hidden'))return;
   if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyE','KeyG','KeyJ','KeyI','KeyM','KeyV'].includes(e.code))e.preventDefault();game.key(e.code,true);if(e.repeat)return;
@@ -188,7 +189,7 @@ async function boot(){
  game.player.name=model.playerName||'OPERATOR';
  window.addEventListener('null-city-cover-entered',()=>{if(!model.playerName)openArrival();},{once:true});
  window.dispatchEvent(new Event('null-city-menu-ready'));
- let last=performance.now(),lastSave=last,meterStart=last,meterFrames=0,meterDraw=0;function frame(t){const dt=Math.min(50,t-last);last=t;game.update(dt);updateMentorTrail(t);if(game.paused&&game.player.hacking)game.player.anim+=dt;if($('#intro').classList.contains('hidden')){const drawStart=performance.now();game.draw();drawMini();meterDraw+=performance.now()-drawStart;meterFrames++;if(t-meterStart>2000){view.dataset.fps=String(Math.round(meterFrames*1000/(t-meterStart)));view.dataset.drawMs=(meterDraw/meterFrames).toFixed(2);meterStart=t;meterFrames=0;meterDraw=0;}}else{meterStart=t;meterFrames=0;meterDraw=0;}if(game.world.minipixel){const zone=Minipixel.get().zone(game.player);if($('#zone').textContent!==zone)$('#zone').textContent=zone;}const prompt=game.prompt;$('#prompt').classList.toggle('show',!!prompt&&!game.paused);if(prompt)$('#prompt').textContent=prompt.label+' [E]';$('#toast').classList.toggle('show',game.toastT>0&&!game.paused);$('#toast').textContent=game.toast||'';if(t-lastSave>6000&&model.started){save();lastSave=t;}requestAnimationFrame(frame);}requestAnimationFrame(frame);
+ let last=performance.now(),lastSave=last,meterStart=last,meterFrames=0,meterDraw=0;function frame(t){const dt=Math.min(50,t-last);last=t;game.update(dt);updateMentorTrail(t);if(game.paused&&game.player.hacking)game.player.anim+=dt;if($('#intro').classList.contains('hidden')){const drawStart=performance.now();game.draw();drawMini();meterDraw+=performance.now()-drawStart;meterFrames++;if(t-meterStart>2000){view.dataset.fps=String(Math.round(meterFrames*1000/(t-meterStart)));view.dataset.drawMs=(meterDraw/meterFrames).toFixed(2);meterStart=t;meterFrames=0;meterDraw=0;}}else{meterStart=t;meterFrames=0;meterDraw=0;}if(game.world.minipixel){const zone=Minipixel.get().zone(game.player);if($('#zone').textContent!==zone)$('#zone').textContent=zone;}const prompt=game.prompt;$('#prompt').classList.toggle('show',!!prompt&&!game.paused);if(prompt){const label=globalThis.NCI18n.t(prompt.label)+' [E]';if($('#prompt').textContent!==label)$('#prompt').textContent=label;}$('#toast').classList.toggle('show',game.toastT>0&&!game.paused);const toastText=globalThis.NCI18n.t(game.toast||'');if($('#toast').textContent!==toastText)$('#toast').textContent=toastText;if(t-lastSave>6000&&model.started){save();lastSave=t;}requestAnimationFrame(frame);}requestAnimationFrame(frame);
 }
 function openCourses(){
  const card=modal('Твой путь в кибербезопасности','NULL ACADEMY / МЕНЮ КУРСОВ'),body=node('div','modal-body');
@@ -319,8 +320,8 @@ function drawCapitalOverview(canvas){
  for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){const g=W.ground[y*MW+x];c.fillStyle=g===G.BUILDING?'#6b7697':g===G.ROAD||g===G.CROSS?'#81c3c9':g===G.SIDEWALK?'#354e65':g===G.PLAZA?'#b39162':'#123d37';c.fillRect(x*scale,y*scale,scale,scale);}
  c.textAlign='center';c.font='bold 17px monospace';
  const labels=[['ВНЕШНИЙ ПОЯС',60,6],['САДЫ СВЯЗИ',30,54],['ОКРУГ НАБЛЮДЕНИЯ',60,27],['NEXUS',60,39]];
- for(const [label,x,y]of labels){const width=c.measureText(label).width+22;c.fillStyle='#0a1225ee';c.fillRect(x*scale-width/2,y*scale-19,width,28);c.fillStyle='#f1dbab';c.fillText(label,x*scale,y*scale);}
- for(const [i,p]of W.capitalGates.entries()){c.fillStyle=capitalUnlocked(model,p.id)?'#ffce75':'#985c79';c.fillRect(p.x*scale-8,p.y*scale-8,16,16);c.textAlign='left';c.font='13px monospace';c.fillText((i+1)+' '+(capitalUnlocked(model,p.id)?'ОТКРЫТ':'ЗАКРЫТ'),p.x*scale+17,p.y*scale+5);}
+ for(const [label,x,y]of labels){const width=c.measureText(globalThis.NCI18n?.t(label)||label).width+22;c.fillStyle='#0a1225ee';c.fillRect(x*scale-width/2,y*scale-19,width,28);c.fillStyle='#f1dbab';c.fillText(globalThis.NCI18n?.t(label)||label,x*scale,y*scale);}
+ for(const [i,p]of W.capitalGates.entries()){c.fillStyle=capitalUnlocked(model,p.id)?'#ffce75':'#985c79';c.fillRect(p.x*scale-8,p.y*scale-8,16,16);c.textAlign='left';c.font='13px monospace';c.fillText((i+1)+' '+(globalThis.NCI18n?.t(capitalUnlocked(model,p.id)?'ОТКРЫТ':'ЗАКРЫТ')||(capitalUnlocked(model,p.id)?'ОТКРЫТ':'ЗАКРЫТ')),p.x*scale+17,p.y*scale+5);}
 }
 
 
@@ -408,3 +409,5 @@ function appendRadioJournal(parent){
   entry.append(button(reply?'Вернуться к разговору':'Ответить на вызов',()=>openStoryCall(id),'text-button'));parent.append(entry);
  }
 }
+
+window.addEventListener('null-city-language-changing',()=>save());

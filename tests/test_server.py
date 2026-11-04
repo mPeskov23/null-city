@@ -35,15 +35,80 @@ class ServerTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls): cls.server.shutdown();cls.server.server_close();cls.thread.join();cls.tmp.cleanup()
     @classmethod
-    def request(cls,method,path,data=None,cookie=None,origin=None):
+    def request(cls,method,path,data=None,cookie=None,origin=None,host=None):
         c=http.client.HTTPSConnection('localhost',cls.port,context=cls.context,timeout=10)
         headers={'Origin':origin or app.ORIGIN,'X-NullCity':'1','Content-Type':'application/json'}
+        if host: headers['Host']=host
         if cookie: headers['Cookie']=cookie
         c.request(method,'/api/'+path,json.dumps(data) if data is not None else None,headers);r=c.getresponse();body=json.loads(r.read());token=r.getheader('Set-Cookie');status=r.status;c.close();return status,body,token.split(';')[0] if token else None
+    def test_registration_validation_duplicate_and_session_lifecycle(self):
+        credentials={'email':' Session@Test.Invalid ', 'name':'Session tester', 'password':'Session-test-password!2026'}
+        for invalid in [{'email':'broken'}, {'password':'short'}, {'name':'x'}]:
+            self.assertEqual(self.request('POST','register',credentials|invalid)[0],400)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+            results=list(pool.map(lambda _: self.request('POST','register',credentials),range(2)))
+        self.assertEqual(sorted(r[0] for r in results),[200,409])
+        first=next(r for r in results if r[0]==200)
+        self.assertEqual(first[1]['email'],'session@test.invalid')
+        bad=self.request('POST','login',credentials|{'password':'Incorrect-password!2026'})
+        absent=self.request('POST','login',credentials|{'email':'absent@test.invalid'})
+        self.assertEqual((bad[0],bad[1]),(absent[0],absent[1]))
+        self.assertEqual(bad[0],401)
+        status,_,second=self.request('POST','login',credentials)
+        self.assertEqual(status,200);self.assertNotEqual(first[2],second)
+        status,_,cleared=self.request('POST','logout',{},second)
+        self.assertEqual(status,200);self.assertEqual(cleared,'__Host-nullcity=')
+        self.assertEqual(self.request('GET','me',cookie=second)[0],401)
+        self.assertEqual(self.request('GET','me',cookie=first[2])[0],200)
+        with app.db() as c: c.execute('UPDATE sessions SET expires=? WHERE user_id=?',(app.now()-1,first[1]['id']))
+        self.assertEqual(self.request('GET','me',cookie=first[2])[0],401)
+
+    def test_stale_round_and_spectator_actions(self):
+        a,b,spectator=[u[1] for u in self.users[:3]]
+        status,created,_=self.request('POST','rooms',{'name':'Deadline check','capacity':2,'topic':'mixed','duration':15},a)
+        self.assertEqual(status,200);rid=created['id'];path=f'rooms/{rid}'
+        self.assertEqual(self.request('POST',path+'/ready',{'ready':True},spectator)[0],403)
+        self.request('POST',path+'/join',{},b)
+        for cookie in [a,b]: self.request('POST',path+'/ready',{'ready':True},cookie)
+        self.assertEqual(self.request('POST',path+'/start',{},a)[0],200)
+        self.assertEqual(self.request('POST',path+'/hint',{'round':0},spectator)[0],403)
+        self.request('POST',path+'/hint',{'round':0},a)
+        watching=self.request('GET',path,cookie=spectator)[1]
+        self.assertIsNone(watching['eliminated']);self.assertFalse(watching['hintUsed'])
+        self.assertNotIn('review',watching);self.assertNotIn('answer',watching['question'])
+        with app.db() as c: c.execute('UPDATE rooms SET deadline=? WHERE id=?',(app.now()-1,rid))
+        self.assertEqual(self.request('POST',path+'/answer',{'round':0,'choice':0},a)[0],409)
+        reconnected=self.request('GET',path,cookie=b)[1]
+        self.assertEqual(reconnected['round'],1)
+        self.assertTrue(all(p['score']==0 for p in reconnected['players']))
+        self.assertEqual(self.request('POST',path+'/answer',{'round':0,'choice':0},b)[0],409)
+        self.assertEqual(self.request('POST',path+'/answer',{'round':1,'choice':0},a)[0],200)
+        self.assertEqual(self.request('POST',path+'/answer',{'round':1,'choice':0},a)[0],409)
+
+    def test_status_reports_verified_backups_and_static_locales(self):
+        from server.recovery import BackupService
+        previous=app.BACKUPS
+        try:
+            app.BACKUPS=BackupService(app.DB,Path(self.tmp.name)/'scheduled')
+            self.assertEqual(self.request('GET','status')[0],503)
+            self.assertIsNotNone(app.BACKUPS.run_once())
+            status,body,_=self.request('GET','status')
+            self.assertEqual(status,200)
+            self.assertEqual(body['database'],'ok')
+            self.assertEqual(body['backups']['status'],'ok')
+            self.assertNotIn(str(app.DB),json.dumps(body))
+            for path in ['/status.html','/src/i18n.js','/src/i18n-catalog.js','/src/i18n.css','/src/status.js','/assets/signal-lost/opening-cover.png']:
+                conn=http.client.HTTPSConnection('localhost',self.port,context=self.context,timeout=10)
+                conn.request('GET',path);response=conn.getresponse()
+                self.assertEqual(response.status,200,path);self.assertTrue(response.read());conn.close()
+        finally: app.BACKUPS=previous
+
     def test_auth_and_csrf(self):
         self.assertEqual(self.request('GET','me')[0],401)
         status,me,_=self.request('GET','me',cookie=self.users[0][1]);self.assertEqual(status,200);self.assertNotIn('password',me)
         self.assertEqual(self.request('PUT','me',{'name':'Changed','bio':''},self.users[0][1],origin='https://evil.invalid')[0],403)
+        lan_host = '192.168.1.100:8443'
+        self.assertEqual(self.request('PUT','me',{'name':'Changed','bio':''},self.users[0][1],origin=f'https://{lan_host}',host=lan_host)[0],200)
         with app.db() as c:
             stored=c.execute('SELECT password FROM users LIMIT 1').fetchone()[0]
         self.assertNotIn('Test-only',stored)

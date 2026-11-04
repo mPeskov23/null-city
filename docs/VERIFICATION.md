@@ -1,3 +1,11 @@
+# Registration and multiplayer audit — 21 October 2026
+
+- 15 Python integration scenarios pass using temporary accounts, a separate SQLite database and verified TLS. Added concurrent duplicate registration, invalid fields, indistinguishable wrong-password/unknown-user errors, independent login sessions, logout invalidation and session expiry.
+- Multiplayer checks include four players, ready checks, host transfer, concurrent capacity enforcement, matchmaking, reconnect snapshots, private hints, spectator permissions, stale-round rejection, duplicate answers, authoritative scores and rematches.
+- Logout now expires the browser cookie. Expired sessions restore the sign-in form. Club requests time out after 15 seconds; answer/hint handlers retain the round they were rendered for.
+- 14 JavaScript test files, syntax checks and the standalone build pass. Browser journal close works with the language selector; no console warnings/errors observed in this check.
+- These are local integration checks, not proof of play between physical remote devices. Authenticated browser checks remain limited by local certificate trust. Container runtime and real team/repository evidence remain outstanding as described below.
+
 # Verification — 0.7 / 13 October 2026
 
 - JS syntax/Python compilation and standalone build pass.
@@ -124,3 +132,27 @@ Linux/Windows/AD-лаборатории и дальнейшие главы не 
 ## 1.0 — 2026-10-14
 
 See `RELEASE-1.0.md` for implemented player flows and remaining environment blockers. Main-menu auth switching and the campaign dossier were inspected in the desktop browser. All eight server scenarios and all eight frontend test files pass. The TLS warning prevents claiming a completed multiplayer browser walkthrough.
+
+## 21 October 2026 — subject audit and localization
+
+- `npm run check`: JavaScript syntax and Python compilation pass.
+- `npm test`: 14 frontend/model test files pass, including source catalog coverage,
+  dynamic localized fragments and preservation of IP addresses/terminal commands.
+- `npm run test:server`: 13 Python scenarios pass with isolated HTTPS and temporary
+  databases, including status/static localization assets, four-player matches,
+  spectators, reconnection state, concurrent saves and room capacity, backup
+  restore with WAL, corrupt backup rejection and no-overwrite behavior.
+- `npm run build`: standalone edition includes the catalog and language selector.
+- Browser: RU/ES/EN cover and menu switching; existing 2/11 campaign progress
+  preserved; Spanish journal/story recap; English multiplayer menu and club.
+  Fixed language control overlapping the gameplay toolbar and an untranslated
+  dialogue prefix. No console warnings/errors observed in this walkthrough.
+- Container image builds and Compose configuration validates. Runtime still fails
+  before Python starts (`exec /bin/sh: operation not permitted`). Stopped the
+  restart loop; volume preserved. Do not mark container gate complete.
+- HTTPS browser multiplayer and physical remote-device demo remain unverified.
+  Team names, roles, repository history and peer review remain pending.
+
+- Real launcher tested from a different working directory with an isolated DB and
+  generated TLS certificate: HTTPS status becomes healthy after the automatic
+  snapshot. Mobile 390×844 cover and club checked; no horizontal overflow.

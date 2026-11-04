@@ -1,0 +1,150 @@
+NULL CITY — a story-driven pixel cybersecurity game. Two chapters, one city, your choices.|NULL CITY: una aventura pixelada de ciberseguridad. Dos capítulos, una ciudad, tus decisiones.
+LOCAL NETWORK|RED LOCAL
+Tools|Herramientas
+Club ↗|Club ↗
+Capital map|Mapa de la capital
+Capital|Capital
+Character editor|Editor de personaje
+♙ Character|♙ Personaje
+Course menu|Menú de cursos
+Courses|Cursos
+District places|Lugares del distrito
+Places|Lugares
+Network vision [V]|Visión de red [V]
+Network|Red
+Evidence and items|Pruebas y objetos
+▣ Evidence|▣ Pruebas
+Journal|Diario
+Pixel city|Ciudad pixelada
+City. WASD or arrows to move, E to interact. Click a street to walk.|Ciudad. WASD o flechas para moverte, E para interactuar. Haz clic en una calle para caminar.
+Heavy rain|Lluvia intensa
+← Return to the district|← Volver al distrito
+City zoom|Escala de la ciudad
+Zoom out|Alejar
+Default zoom|Escala normal
+Zoom in|Acercar
+District map|Mapa del distrito
+◇ you|◇ tú
+◆ case|◆ caso
+◆ completed|◆ completado
+◆ doors|◆ puertas
+Map · M|Mapa · M
+walk|caminar
+run|correr
+interact|interactuar
+click — route|clic: ruta
+A STORY-DRIVEN CYBERSECURITY GAME|UNA AVENTURA DE CIBERSEGURIDAD
+The city forgot your name.|La ciudad olvidó tu nombre.
+Learn to read its traces.|Aprende a leer sus huellas.
+Neon rain. Someone else's entry in the registry.|Lluvia de neón. Un registro que no te pertenece.
+Your first shift starts now.|Tu primer turno empieza ahora.
+Start shift|Iniciar turno
+2 CHAPTERS · 11 CASES · 5 OPEN DOORS|2 CAPÍTULOS · 11 CASOS · 5 PUERTAS ABIERTAS
+No prior knowledge needed. Saves automatically.|No necesitas conocimientos previos. Se guarda automáticamente.
+Lost|Dirección
+address|perdida
+⌂ Open doors · shop and stories ↗|⌂ Puertas abiertas · tienda e historias ↗
+INVESTIGATION PROGRESS|PROGRESO DE LA INVESTIGACIÓN
+MARA / MENTOR|MARA / MENTORA
+“You do not need to know everything.|«No necesitas saberlo todo.
+Start with the right question.”|Empieza con la pregunta adecuada».
+OPERATOR|OPERADOR
+Open field guide|Abrir la guía de campo
+● Progress is saved on this device|● El progreso se guarda en este dispositivo
+Terms|Condiciones
+SIMULATION ACTIVE|SIMULACIÓN ACTIVA
+All systems are for training|Todos los sistemas son de práctica
+NULL CITY / Multiplayer|NULL CITY / Multijugador
+← Main menu|← Menú principal
+LEARN. CONNECT. PLAY TOGETHER.|APRENDE. CONECTA. JUEGA EN EQUIPO.
+Assemble your shift.|Reúne a tu turno.
+Hold the signal.|Mantén la señal.
+Your operator, friends and short training matches. Five situations, the same questions for everyone. Accuracy wins, not connection speed.|Tu operador, amigos y partidas breves de práctica. Cinco situaciones y las mismas preguntas para todos. Gana la precisión, no la velocidad de conexión.
+Enter multiplayer|Entrar al multijugador
+The solo story needs no account. A shared shift requires a personal pass.|La historia individual no requiere cuenta. Para un turno compartido necesitas un pase personal.
+Operator name · for registration|Nombre de operador · para registrarte
+Do not reuse your school or email password.|No reutilices la contraseña de tu escuela o correo.
+How data is stored|Cómo se guardan los datos
+Club sections|Secciones del club
+Arena|Arena
+People and chat|Personas y chat
+My profile|Mi perfil
+Results|Resultados
+Operations center|Centro de operaciones
+Refresh|Actualizar
+2–4 OPERATORS / 5 ROUNDS|2–4 OPERADORES / 5 RONDAS
+The next shift awaits|El siguiente turno te espera
+Quick matchmaking or your own room for friends. Everyone confirms readiness before starting.|Partida rápida o tu propia sala para amigos. Todos confirman que están listos antes de empezar.
+Quick match →|Partida rápida →
+Operator progress|Progreso del operador
+Match rules|Reglas de la partida
+Five rounds. A correct answer earns 1 point; an error or skip earns 0. Answer once per round. A round ends when everyone answers or time runs out. Each player may use Pulse once per match to eliminate one wrong option. Everyone has the same ability. The highest score wins; equal top scores tie. Earn 20 arena XP per correct answer and a new level every 100 XP. Three correct answers in finished matches per UTC day grant 40 extra XP once that day. Arena XP is separate from the solo story wallet.|Cinco rondas. Cada respuesta correcta vale 1 punto; un error u omisión vale 0. Solo puedes responder una vez por ronda. La ronda termina cuando todos responden o se agota el tiempo. Cada jugador puede usar Pulso una vez por partida para descartar una opción incorrecta. Todos tienen la misma habilidad. Gana quien más puntos obtiene; las puntuaciones máximas iguales empatan. Cada acierto da 20 XP de arena y cada 100 XP subes de nivel. Tres aciertos en partidas terminadas durante un día UTC dan 40 XP extra una sola vez ese día. La XP de arena es independiente del saldo de la historia individual.
+If disconnected, return to the same room. The server timer keeps running; reconnecting restores the current state. Spectators watch but cannot answer.|Si pierdes la conexión, vuelve a la misma sala. El temporizador del servidor sigue avanzando; al reconectar se restaura el estado actual. Los espectadores observan, pero no responden.
+Create a room for friends|Crear una sala para amigos
+Name|Nombre
+Players|Jugadores
+Topic|Tema
+All topics|Todos los temas
+Networks|Redes
+Security|Seguridad
+Seconds per round|Segundos por ronda
+Create room|Crear sala
+Open rooms|Salas abiertas
+Show|Mostrar
+Waiting and live matches|En espera y en curso
+Available to join|Disponibles para unirse
+Watch game|Observar partida
+Operators|Operadores
+Name|Nombre
+Find an operator|Buscar un operador
+Order|Orden
+By name|Por nombre
+Newest first|Más recientes primero
+Online only|Solo en línea
+Search|Buscar
+← Back|← Atrás
+Next →|Siguiente →
+Friends and invitations|Amigos e invitaciones
+District radio channel|Canal de radio del distrito
+The public chat is visible to all signed-in operators.|El chat público es visible para todos los operadores conectados.
+Chat messages|Mensajes del chat
+Message|Mensaje
+Send|Enviar
+About me|Sobre mí
+Save profile|Guardar perfil
+Avatar|Avatar
+PNG or JPEG · up to 120 KB|PNG o JPEG · hasta 120 KB
+Restore default avatar|Restaurar avatar predeterminado
+Story save|Partida de la historia
+Manually transfer solo progress between devices. Loading replaces your local save; export a backup first. If two devices conflict, the server will not silently overwrite newer data.|Transfiere manualmente el progreso individual entre dispositivos. Cargar reemplaza la partida local; exporta antes una copia. Si dos dispositivos entran en conflicto, el servidor no sobrescribe los datos recientes sin avisar.
+Save to server|Guardar en el servidor
+Load from server|Cargar desde el servidor
+Export JSON|Exportar JSON
+Matches CSV|Partidas CSV
+Sign out|Cerrar sesión
+Your results|Tus resultados
+Terms of Service|Condiciones de uso
+Training scenarios · no real attacks|Escenarios de práctica · sin ataques reales
+Privacy / NULL CITY|Privacidad / NULL CITY
+Online club|Club en línea
+EDUCATIONAL EDITION / 12.10.2026|EDICIÓN EDUCATIVA / 12.10.2026
+Local story|Historia local
+Without an account, progress, appearance, settings and notes are stored in this browser's localStorage. Game commands run inside a simulation and are not sent to real network targets. Clearing site data removes the local copy; settings allow save export.|Sin cuenta, el progreso, la apariencia, los ajustes y las notas se guardan en el localStorage de este navegador. Los comandos se ejecutan en una simulación y no se envían a objetivos reales. Borrar los datos del sitio elimina la copia local; puedes exportar la partida desde los ajustes.
+Server mode stores email, name, bio, avatar, salted password hash, sessions, friendships, messages, match participants and results. Solo progress is sent only by the Save to server button. Email is hidden from other operators. Name, bio, avatar, online status, chat and results are visible to signed-in participants.|El servidor guarda email, nombre, biografía, avatar, hash de contraseña con sal, sesiones, amistades, mensajes, participantes y resultados. El progreso individual solo se envía al pulsar Guardar en el servidor. El email no se muestra a otros operadores. Nombre, biografía, avatar, estado en línea, chat y resultados son visibles para los participantes conectados.
+Sessions and security|Sesiones y seguridad
+Sign-in uses a secure session cookie lasting up to one day. It is required for accounts and not used for advertising. Passwords are not stored as plain text. IP addresses are used in memory for rate limiting; request messages and secrets are not written to application logs. There is no third-party analytics.|El acceso usa una cookie de sesión segura de hasta un día. Es necesaria para las cuentas y no se usa para publicidad. Las contraseñas no se guardan en texto claro. Las IP se usan en memoria para limitar solicitudes; mensajes y secretos no se escriben en los registros de la aplicación. No hay analítica de terceros.
+Export and deletion|Exportación y eliminación
+Your profile can export account data as JSON and results as CSV, remove your avatar or end your session. Automatic account deletion is not implemented: before a public launch, the operator must provide a deletion request channel and define retention periods. This edition is for local team demonstrations; do not enter sensitive personal information. Private backups may contain the same data as the database.|Desde el perfil puedes exportar tus datos en JSON y resultados en CSV, eliminar el avatar o cerrar sesión. No se ha implementado la eliminación automática de cuentas: antes de un lanzamiento público, el responsable debe ofrecer un canal de solicitud de eliminación y definir los plazos de conservación. Esta edición es para demostraciones locales del equipo; no introduzcas datos personales sensibles. Las copias privadas pueden contener los mismos datos que la base.
+Who manages the data|Quién gestiona los datos
+The team running this NULL CITY instance manages the data. It must establish a responsible contact, retention periods and applicable requirements before opening public registration. In a local installation, the computer owner manages the database. This describes implemented behavior, not full legal certification.|Los datos los gestiona el equipo que ejecuta esta instancia de NULL CITY. Debe definir un contacto responsable, plazos de conservación y requisitos aplicables antes de abrir el registro al público. En una instalación local, el propietario del ordenador gestiona la base. Esto describe el funcionamiento implementado, no una certificación jurídica completa.
+Terms of Service / NULL CITY|Condiciones de uso / NULL CITY
+Purpose|Finalidad
+NULL CITY is an educational game and demonstration project. Tasks teach networking and security foundations. It is not an official CompTIA or OffSec program, does not issue their certifications and does not promise an exam pass.|NULL CITY es un juego educativo y un proyecto de demostración. Las tareas enseñan fundamentos de redes y seguridad. No es un programa oficial de CompTIA ni OffSec, no expide sus certificados ni promete aprobar exámenes.
+Participation rules|Reglas de participación
+Use your own account. Do not post passwords, other people's personal data, harassment, spam or illegal content in public chat. Do not disrupt the server or other accounts. The instance owner may restrict an offender's access through database administration.|Usa tu propia cuenta. No publiques contraseñas, datos personales ajenos, acoso, spam o contenido ilegal en el chat público. No interrumpas el servidor ni cuentas ajenas. El propietario de la instancia puede restringir el acceso de infractores mediante la administración de la base.
+Game and rewards|Juego y recompensas
+The arena has five rounds, identical questions and a shared timer. The server accepts one answer per round and awards one point per correct answer. Disconnection does not pause the timer. Equal top scores tie. XP and items are virtual, cannot be bought with money and have no monetary value. Character appearance does not affect results.|La arena tiene cinco rondas, preguntas idénticas y un temporizador compartido. El servidor acepta una respuesta por ronda y da un punto por acierto. Desconectarse no detiene el temporizador. Las puntuaciones máximas iguales empatan. La XP y los objetos son virtuales, no se compran con dinero y no tienen valor monetario. La apariencia del personaje no afecta al resultado.
+Training boundaries|Límites de la práctica
+Actions inside the simulator do not grant permission to test real systems. Practice outside the game only in your own lab or within an explicitly agreed scope.|Las acciones del simulador no dan permiso para comprobar sistemas reales. Practica fuera del juego solo en tu laboratorio o dentro de un alcance expresamente autorizado.
+Availability and data|Disponibilidad y datos
+This educational edition is evolving. Bugs and changes are possible; export your progress before updates. The online club depends on server availability. OSCP and Security+ preparation currently includes introductory activities and a module outline. Original sprites were created for NULL CITY; no Terraria assets are used.|Esta edición educativa está en desarrollo. Puede haber errores y cambios; exporta tu progreso antes de actualizar. El club depende de la disponibilidad del servidor. La preparación para OSCP y Security+ incluye por ahora actividades introductorias y un plan de módulos. Los sprites originales se crearon para NULL CITY; no se usan recursos de Terraria.

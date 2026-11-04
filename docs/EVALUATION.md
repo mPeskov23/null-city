@@ -23,9 +23,9 @@ map, **not a claim of awarded points or a guarantee of acceptance**.
 ## Candidate route: 14 base + 5 bonus = 19 points
 
 Only fully working, demonstrated and accepted modules count (PDF p. 12).
-The custom module is at evaluator discretion. Do not count the same feature twice
+The 19-point route uses listed modules. Do not count the same feature twice
 as a replacement for a missing requirement. No framework/ORM, WAF/Vault, WCAG AA,
-full certification course or three-language module is claimed.
+or full certification course is claimed.
 
 | Category / module | Weight | Concrete demonstration | Validation boundary |
 |---|---:|---|---|
@@ -35,7 +35,8 @@ full certification course or three-language module is claimed.
 | Gaming: complete web game | 2 | Five-round knowledge duel, server score, winner/tie, final explanations | Four-client API match passed |
 | Gaming: remote players | 2 | Separate authenticated clients, server deadline, recover snapshot after reconnect | Separate physical devices/network latency demo required |
 | Gaming: multiplayer 3+ | 2 | Capacity 2–4, same deck, one answer per user per round | Four-client API match passed |
-| Custom major: stateful incident simulator | 2 | Six linked labs, network/file/firewall state, preserved evidence, transfer scenario, final report | Existing model tests; evaluator decides major status |
+| Accessibility: three languages | 1 | RU/EN/ES selector on cover/game/club; localized story, commands explanations, quizzes, policy pages and errors | Catalog and command-preservation tests; browser menu/journal checks; peer linguistic review |
+| Devops: health/status and disaster recovery | 1 | HTTPS health/status endpoints, public status page, scheduled verified snapshots, retention, non-destructive restore command and runbook | WAL restore/corruption/status tests; complete deployment drill pending |
 | Users: game statistics | 1 | Win/draw/loss, dates/opponents/results, leaderboard, badges, levels | Server tests + browser walkthrough pending |
 | Gaming: customization | 1 | Default configuration, topic themes, 15–60s timer, equal one-use “Impulse” ability | Ability test added; UI walkthrough pending |
 | Gaming: gamification | 1 | DB-derived XP/levels + badges + leaderboard; visible feedback | Server authoritative arena results; offline XP is excluded |
@@ -43,7 +44,7 @@ full certification course or three-language module is claimed.
 | Web: advanced search | 1 | Name search + online filter + sort + pagination | API/UI flow needs peer demo |
 | **Total candidates** | **19** | **14 + maximum 5 bonus** | **Not an awarded or certified score** |
 
-## Why the custom simulator may merit a major module
+## Additional simulator work (not counted in the 19-point route)
 
 The single-player terminal is a bounded interpreter over explicit network and
 filesystem models, not a collection of pre-baked “correct command” buttons.
@@ -93,3 +94,27 @@ prepare a fallback module if the team needs a less discretionary path.
 - Image build and Compose configuration succeed. Runtime still fails on this host before application code: `exec /bin/sh: operation not permitted`. Do not mark the mandatory container gate complete.
 - Native HTTPS health succeeds with explicit certificate verification. Browser TLS trust is unresolved; no warning bypass was attempted. Multi-device browser demonstration remains pending.
 - Candidate score remains 19, not an awarded score. Matchmaking/ready/rematch improve the existing game modules; they are not counted as another game or an extra major module.
+
+## Audit update — 21 October 2026
+
+- The route contains six Major modules (12 points) and seven Minor modules
+  (7 points), totaling 19 candidate points without relying on a custom module.
+- Every selected module must still pass its full demonstration. The count is not
+  an awarded grade and does not excuse a failed mandatory gate.
+- Docker Compose configuration and image build pass. Container startup still
+  fails before application execution: `exec /bin/sh: operation not permitted`.
+  The restart loop was stopped without deleting the persistent volume.
+- The current workspace exposes no usable Git repository (`git status` fails).
+  The actual team repository, logins, roles and contribution history are pending.
+  The user deferred providing those details; no substitute attribution is created.
+- Current tests include the real HTTPS API, four-player game state, save races,
+  verified backups/recovery, localization catalogs and command/IP preservation.
+- Static HTTP preview deliberately does not submit credentials or call backend
+  APIs. It links to the HTTPS club instead. Single-player remains available
+  without mandatory registration.
+- Separate physical machines, trusted browser TLS, final target Chrome version
+  and full team acceptance are still required for the evaluation demonstration.
+
+Optional categories are alternatives, not a requirement to implement every module.
+In particular, the subject makes SSR and ICP mutually incompatible. WAF/Vault,
+frameworks, ORM, 3D, AI and blockchain are not claimed by this selected route.

@@ -1,0 +1,133 @@
+The IP address works but the website name does not. What should you check first?|La dirección IP funciona pero el nombre del sitio no. ¿Qué compruebas primero?
+Monitor resolution|Resolución del monitor
+Keyboard model|Modelo del teclado
+DNS maps names to IP addresses.|DNS relaciona nombres con direcciones IP.
+Which device forwards packets between different IP networks?|¿Qué dispositivo reenvía paquetes entre redes IP distintas?
+Repeater|Repetidor
+Router|Router
+Passive antenna|Antena pasiva
+A router selects the next hop using its routing table.|Un router elige el siguiente salto mediante su tabla de rutas.
+What does DHCP typically provide?|¿Qué proporciona normalmente DHCP?
+Administrator privileges|Permisos de administrador
+Website certificate|Certificado del sitio
+Address and network settings|Dirección y configuración de red
+DHCP can provide an IP address, subnet mask, gateway and DNS.|DHCP puede proporcionar dirección IP, máscara, puerta de enlace y DNS.
+What does TCP do when data is lost?|¿Qué hace TCP cuando se pierden datos?
+It can retransmit lost data|Puede retransmitir los datos perdidos
+It always disconnects the cable|Siempre desconecta el cable
+It changes the domain name|Cambia el nombre de dominio
+TCP uses acknowledgments and retransmissions for reliable delivery.|TCP usa confirmaciones y retransmisiones para una entrega fiable.
+Which DNS record typically maps a name to an IPv4 address?|¿Qué registro DNS relaciona normalmente un nombre con una dirección IPv4?
+A holds IPv4, AAAA holds IPv6; MX points to a mail server.|A contiene IPv4, AAAA contiene IPv6; MX indica un servidor de correo.
+What does the /24 prefix mean in IPv4?|¿Qué significa el prefijo /24 en IPv4?
+The first 24 bits identify the network|Los primeros 24 bits identifican la red
+The address lasts 24 hours|La dirección dura 24 horas
+The network has exactly 24 devices|La red tiene exactamente 24 dispositivos
+The prefix specifies the number of network bits in the address.|El prefijo indica cuántos bits de la dirección corresponden a la red.
+An assistant needs to read orders. Which permissions should you grant?|Un ayudante necesita leer pedidos. ¿Qué permisos le das?
+A shared administrator account|Una cuenta de administrador compartida
+A separate account with order read access|Una cuenta individual con lectura de pedidos
+Full access to all customers|Acceso completo a todos los clientes
+Least privilege limits access to the task; a separate account helps attribution.|El mínimo privilegio limita el acceso a la tarea; una cuenta individual facilita atribuir las acciones.
+Before analyzing a suspicious log, you should…|Antes de analizar un registro sospechoso, deberías…
+Delete inconvenient lines|Eliminar líneas incómodas
+Publish all personal data|Publicar todos los datos personales
+Preserve the original and work on a copy|Conservar el original y trabajar con una copia
+The preserved original supports verification and repeat analysis.|El original conservado permite verificar la autenticidad y repetir el análisis.
+Which pair represents two different authentication factors?|¿Qué pareja representa dos factores de autenticación distintos?
+Password and hardware key|Contraseña y llave física
+Two passwords|Dos contraseñas
+Password and security question|Contraseña y pregunta secreta
+Knowing a password and possessing a hardware key are different factors.|Conocer una contraseña y poseer una llave física son factores distintos.
+How can you protect backups from loss of the main server?|¿Cómo proteges las copias ante la pérdida del servidor principal?
+Keep them only on its disk|Guardarlas solo en su disco
+Keep an independent copy and test recovery|Guardar una copia independiente y probar la recuperación
+Assume that an existing file proves it works|Suponer que la existencia del archivo demuestra que funciona
+Independent storage and recovery tests reduce the risk of losing everything.|El almacenamiento independiente y las pruebas de recuperación reducen el riesgo de pérdida total.
+What does authorization determine?|¿Qué determina la autorización?
+Actions available to the user|Las acciones permitidas al usuario
+Processor temperature|La temperatura del procesador
+Identity itself|La identidad por sí sola
+Authentication establishes identity; authorization determines permissions.|La autenticación establece la identidad; la autorización determina los permisos.
+Only one host is in scope. A link points to another. What should you do?|Solo se autoriza un host. Un enlace lleva a otro. ¿Qué debes hacer?
+Test the entire network|Comprobar toda la red
+Clarify permission before investigating the other host|Aclarar el permiso antes de investigar el otro host
+Treat the link as permission|Considerar el enlace como permiso
+Technical reachability does not expand the agreed scope.|La accesibilidad técnica no amplía el alcance autorizado.
+Two hosts share an IPv4 subnet. How do you find the neighbor's MAC address?|Dos hosts comparten una subred IPv4. ¿Cómo obtienes la MAC del vecino?
+Send an ARP request|Enviar una solicitud ARP
+Change the DNS zone|Cambiar la zona DNS
+Renew the TLS certificate|Renovar el certificado TLS
+ARP maps a local IPv4 address to a link-layer address. DNS serves another purpose.|ARP relaciona una dirección IPv4 local con una dirección de enlace. DNS cumple otra función.
+Why does an IP packet have a TTL?|¿Para qué tiene TTL un paquete IP?
+To set password expiry|Para definir la caducidad de la contraseña
+To limit traversal through routers|Para limitar su recorrido por routers
+To encrypt its payload|Para cifrar su contenido
+Routers decrement TTL and discard the packet when it expires, limiting routing loops.|Los routers reducen el TTL y descartan el paquete cuando se agota, limitando los bucles de rutas.
+Which address in 192.168.8.0/24 is normally the network address?|¿Qué dirección de 192.168.8.0/24 suele ser la dirección de red?
+With /24, the last eight bits identify the host. All zeros in that part denotes the network.|Con /24, los últimos ocho bits identifican el host. Esa parte a cero indica la red.
+A client reaches its gateway but not an external IP. What next?|Un cliente alcanza su puerta de enlace pero no una IP externa. ¿Qué investigas ahora?
+Routing and filtering beyond the local network|Las rutas y los filtros después de la red local
+Only the DNS cache|Solo la caché DNS
+Page encoding|La codificación de la página
+Reaching the gateway does not prove an external route or permitting rules exist.|Alcanzar la puerta de enlace no demuestra que existan una ruta externa o reglas que la permitan.
+How does UDP differ from TCP?|¿En qué se diferencia UDP de TCP?
+UDP guarantees delivery order|UDP garantiza el orden de entrega
+UDP lacks TCP's acknowledgment and retransmission mechanism|UDP no ofrece el mecanismo de confirmación y retransmisión de TCP
+UDP always encrypts packets|UDP siempre cifra los paquetes
+An application using UDP decides how to handle loss; encryption is not an inherent property of UDP.|Una aplicación sobre UDP decide cómo tratar las pérdidas; el cifrado no es una propiedad inherente de UDP.
+What does a VLAN separate on a switch?|¿Qué separa una VLAN en un switch?
+Logical broadcast domains|Dominios de difusión lógicos
+User password lengths|Longitudes de contraseñas
+Browser versions|Versiones de navegadores
+VLANs logically divide the link-layer segment. Inter-VLAN routing and access controls are configured separately.|Las VLAN dividen lógicamente el segmento de enlace. Las rutas y los controles entre VLAN se configuran por separado.
+What should you inspect when two hosts have the same IP address?|¿Qué compruebas si dos hosts tienen la misma dirección IP?
+Only the website certificate|Solo el certificado del sitio
+Static assignments and the DHCP pool|Las asignaciones estáticas y el rango DHCP
+Backup size|El tamaño de la copia de seguridad
+A manual address may overlap the DHCP pool; find the conflicting assignments.|Una dirección manual puede coincidir con el rango DHCP; localiza las asignaciones en conflicto.
+Public DNS still returns the old address after a change. Why might that happen?|El DNS público aún devuelve la dirección antigua tras un cambio. ¿Cuál podría ser la causa?
+Caching until the record TTL expires|Caché hasta que caduque el TTL del registro
+DNS cannot be changed|DNS es inmutable
+IPv4 cannot be changed|IPv4 no se puede cambiar
+Recursive resolvers and clients may cache a record until its TTL expires.|Los resolutores recursivos y los clientes pueden almacenar un registro hasta que caduque su TTL.
+A log shows a login but no subsequent actions. Can you conclude data was stolen?|Un registro muestra un inicio de sesión, pero no acciones posteriores. ¿Puedes afirmar que se robaron datos?
+Yes, every login means theft|Sí, todo inicio de sesión significa robo
+No, that conclusion needs more evidence|No, hacen falta más pruebas para concluirlo
+Yes, if it happened at night|Sí, si ocurrió de noche
+A report separates observations from hypotheses and states what evidence is missing.|Un informe separa hechos de hipótesis e indica qué pruebas faltan.
+After restoring a file, what completes the verification?|Tras restaurar un archivo, ¿qué completa la verificación?
+The mere presence of the file|La mera presencia del archivo
+Renaming it|Cambiarle el nombre
+Checking integrity and the dependent service|Comprobar la integridad y el servicio dependiente
+Successful copying does not guarantee usable data or restored business functionality.|Copiar con éxito no garantiza datos utilizables ni la recuperación de la función del servicio.
+A downloaded file's hash matches a value on the same compromised site. What does this prove?|El hash de un archivo coincide con el publicado en el mismo sitio comprometido. ¿Qué demuestra?
+A match to that published value, not a trustworthy source|Coincidencia con ese valor publicado, no confianza en el origen
+Complete program safety|La seguridad total del programa
+The author's identity|La identidad del autor
+A hash helps when the expected value comes from a trusted source. An attacker can replace both file and hash.|Un hash ayuda si el valor esperado procede de una fuente fiable. Un atacante puede sustituir tanto el archivo como el hash.
+A former employee's token still works. What is the most targeted response?|El token de un antiguo empleado sigue activo. ¿Cuál es la respuesta más precisa?
+Disable every account|Desactivar todas las cuentas
+Revoke that token and review associated permissions|Revocar ese token y revisar los permisos asociados
+Delete login logs|Eliminar los registros de acceso
+Targeted revocation keeps others working; logs help assess possible use.|La revocación específica mantiene el servicio para los demás; los registros ayudan a evaluar el posible uso.
+A backup is encrypted, but its only key was on the lost server. What risk occurred?|La copia está cifrada, pero la única clave estaba en el servidor perdido. ¿Qué riesgo se materializó?
+Recovery is unavailable|La recuperación no está disponible
+Faster reads|Mayor velocidad de lectura
+Automatic compromise of every password|Compromiso automático de todas las contraseñas
+A recovery plan must include key access and testing on an independent system.|El plan de recuperación debe incluir acceso a las claves y pruebas en un sistema independiente.
+Before changing a firewall rule, prepare…|Antes de cambiar una regla del cortafuegos, prepara…
+A rollback method and checks for required services|Un método de reversión y comprobaciones de los servicios necesarios
+A list of all employee passwords|Una lista de contraseñas de todos los empleados
+Deletion of the old configuration|La eliminación de la configuración anterior
+A verifiable change includes the expected result and a way back if access breaks.|Un cambio verificable incluye el resultado esperado y una forma de revertirlo si se interrumpe el acceso.
+Why does a shared administrator account hinder investigation?|¿Por qué dificulta una investigación una cuenta de administrador compartida?
+Actions cannot reliably be linked to a specific person|No se pueden vincular con fiabilidad las acciones a una persona
+It always runs slower|Siempre funciona más despacio
+It cannot be blocked|No se puede bloquear
+Individual accounts improve traceability and allow targeted access revocation.|Las cuentas individuales mejoran la trazabilidad y permiten revocar accesos concretos.
+A scanner reports a vulnerability. What next in a training lab?|Un escáner informa de una vulnerabilidad. ¿Cuál es el siguiente paso en un laboratorio?
+Immediately consider an incident proven|Dar inmediatamente el incidente por demostrado
+Verify within the authorized scope and record evidence|Verificar dentro del alcance autorizado y registrar pruebas
+Scan unrelated networks|Escanear redes ajenas
+Automated findings need applicability checks and assessment of possible false positives.|Los hallazgos automáticos requieren comprobar su aplicabilidad y los posibles falsos positivos.
