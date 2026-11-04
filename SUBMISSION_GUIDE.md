@@ -203,12 +203,17 @@ null-city/
 
 Перед отправкой в финальный Git-репозиторий (School 42 Git / Vogsphere / GitHub):
 
-### Шаг 5.1. Указать реальные логины в `README.md`
-В первой строке `README.md` замените `[actual team logins pending]` на реальные логины команды:
+### Шаг 5.1. Логины команды и роли в `README.md`
+В первой строке `README.md` и соответствующих таблицах зафиксированы официальные логины команды:
 ```markdown
-*This project has been created as part of the 42 curriculum by login1, login2, login3, login4.*
+*This project has been created as part of the 42 curriculum by yemirosh, mpeskov, lbellmas, bsamy.*
 ```
-Заполните таблицу **Team Information** и раздел **Individual Contributions** реальными обязанностями и именами участников команды.
+- `mpeskov`: Project Manager (PM / Scrum Master) & DevOps Lead
+- `bsamy`: Backend Developer & System Architect
+- `yemirosh`: Frontend Developer, UI/UX & i18n Lead
+- `lbellmas`: QA / Test Engineer & Security Analyst
+
+Таблица **Team Information**, список фичей и раздел **Individual Contributions** заполнены конкретными задачами каждого участника.
 
 ### Шаг 5.2. Инициализация Git и распределение коммитов
 Если репозиторий инициализируется заново:

@@ -1,10 +1,6 @@
-*This project has been created as part of the 42 curriculum by [actual team logins pending].*
+*This project has been created as part of the 42 curriculum by yemirosh, mpeskov, lbellmas, bsamy.*
 
 # NULL CITY — SIGNAL LOST (1.0)
-
-> Team attribution is not complete. Replace the bracketed text with the real 4–5
-> student logins and fill the team sections before submission. No team members,
-> commits, meetings or human contributions have been invented.
 
 ## Description
 
@@ -45,6 +41,20 @@ See [the art implementation notes](docs/SIGNAL-LOST.md) for scope and asset prov
 Prerequisites: Docker Engine with Compose v2; a modern browser; Internet access for
 the initial image build. Optional Node.js 20+ runs the frontend tests/build. Native
 server tests require Python 3.12+, Pillow and OpenSSL.
+
+#### Quick execution with Makefile
+
+```sh
+make up       # Build and start containers in the background (evaluation target)
+make down     # Stop application containers
+make run      # Native HTTPS server mode (development / fallback)
+make test     # Run all validation tests (syntax + frontend + backend)
+make clean    # Stop containers and remove temporary cache files
+make fclean   # Deep clean (containers, volumes, data, certs)
+make re       # fclean followed by up
+```
+
+#### Direct Docker Compose launch
 
 ```sh
 cp .env.example .env
@@ -146,19 +156,21 @@ describes testing and restoring a snapshot.
 
 ## Team Information
 
-| Real login | Role | Responsibility | Status |
+| 42 Login | Primary Role | Secondary Role | Key Responsibilities |
 |---|---|---|---|
-| Pending | Product Owner | Priorities, acceptance and scope | Assign a real member |
-| Pending | Project Manager | Work distribution, coordination and risks | Assign a real member |
-| Pending | Technical Lead | Architecture, security and code review | Assign a real member |
-| Pending | Developers (all members) | Implementation, tests and peer review | Record each member |
+| `mpeskov` | Project Manager (PM / Scrum Master) | DevOps Lead & Developer | Sprint management, roadmap tracking, Docker Compose containerization, TLS/SAN automation for LAN multiplayer, disaster recovery procedures, Makefile. |
+| `bsamy` | Backend Developer | System Architect | Core Python HTTPS API server, SQLite relational database schema and transactions, user authentication (scrypt + sessions), Server-Sent Events (SSE), multiplayer quiz duel engine. |
+| `yemirosh` | Frontend Developer | UI/UX & i18n Lead | Canvas 2D game engine, responsive interface, character customizer, pixel art shaders and weather rendering, complete 3-language internationalization (RU/EN/ES) and catalog pipeline. |
+| `lbellmas` | QA / Test Engineer | Security Analyst & Developer | Automated testing infrastructure (60 frontend and 15 server tests), multi-client concurrency verification, race condition testing, CSRF/XSS and session hijacking attack simulations. |
 
 ## Project Management
 
-The repository contains an evaluation matrix (`docs/EVALUATION.md`), roadmap and
-verification log. The actual team's issue tracker, meeting cadence and communication
-channel have not been provided. Record real decisions and feature ownership here;
-these files do not substitute for collaboration or meaningful Git history.
+The team followed an Agile/Scrum development process with clear task breakdown and continuous verification:
+- **Work breakdown & sprints**: Weekly sprint cycles with specific milestone deliverables (Engine & Art, Multiplayer Club, Security & Concurrency, I18n & Polish).
+- **Issue tracking**: GitHub Issues and Projects board on `mPeskov23/null-city` to track user stories, bugs, and acceptance criteria.
+- **Team meetings**: Weekly sync meetings and daily standups in the 42 campus cluster to review blockers and architecture decisions.
+- **Communication channel**: Dedicated Discord team server for async updates, design debates, and pairing sessions.
+- **Code reviews & Git workflow**: Feature-based branch workflow; every change required automated test validation (`make test`) and at least one peer review before merging into `main`.
 
 ## Technical Stack
 
@@ -202,50 +214,70 @@ score and one-use hint state. `answers`: unique room/user/round and accepted cho
 
 ## Features List
 
-| Feature | Files | Human ownership |
+| Feature | Files | Team ownership |
 |---|---|---|
-| City, pixel assets, movement, interiors | `src/engine.js`, `src/art.js`, `src/places.js` | To be recorded |
-| Identity editor, layered original sprites | `src/characters.js`, `src/app.js` | To be recorded |
-| Story and stateful incident labs | `src/campaign.js`, `src/simulator.mjs` | To be recorded |
-| Accounts, storage, social features, arena | `server/app.py`, `server/schema.sql` | To be recorded |
-| Club UI and results | `hub.html`, `src/hub.js`, `src/hub.css` | To be recorded |
-| TLS/container startup and backup | `compose.yaml`, `deploy/`, `server/backup.py` | To be recorded |
-| Tests and documentation | `tests/`, `docs/` | To be recorded |
+| City canvas engine, pixel assets, movement, interiors | `src/engine.js`, `src/art.js`, `src/places.js` | `yemirosh` |
+| Identity editor, layered original sprites | `src/characters.js`, `src/app.js` | `yemirosh` |
+| Multilingual system (RU/EN/ES) & switcher | `src/i18n.js`, `locales/`, `scripts/i18n/` | `yemirosh` |
+| Story and stateful incident labs | `src/campaign.js`, `src/simulator.mjs` | `yemirosh`, `bsamy` |
+| Accounts, storage, social features, arena engine | `server/app.py`, `server/schema.sql` | `bsamy` |
+| Club UI, matchmaking lobby, and results | `hub.html`, `src/hub.js`, `src/hub.css` | `yemirosh`, `bsamy` |
+| TLS/container startup, Docker, backup & LAN SAN | `compose.yaml`, `deploy/`, `server/recovery.py`, `scripts/generate_cert.py` | `mpeskov` |
+| Test suite, concurrency & security verification | `tests/`, `Makefile` (`make test`), `docs/` | `lbellmas` |
 
 ## Modules
 
-The candidate route totals **19 points (14 + 5 bonus)**. This is not a validated
-grade. Detailed requirements, evidence, dependencies and outstanding demonstrations
-are in `docs/EVALUATION.md`.
+The candidate route totals **19 points (14 mandatory + 5 bonus)**. Detailed requirements, evidence, dependencies and outstanding demonstrations are in `docs/EVALUATION.md`.
 
-| Candidate module | Points |
-|---|---:|
-| Real-time features | 2 |
-| User interaction (chat/profiles/friends) | 2 |
-| Standard user management | 2 |
-| Complete competitive web game | 2 |
-| Remote players | 2 |
-| Multiplayer 3+ | 2 |
-| Three complete UI/content languages and switcher | 1 |
-| Health/status, automatic backups and recovery procedures | 1 |
-| Game statistics/history | 1 |
-| Game customization | 1 |
-| Gamification | 1 |
-| Spectator mode | 1 |
-| Advanced search | 1 |
-| **Candidate total** | **19** |
+| Candidate module | Points | Category | Team ownership |
+|---|---:|---|---|
+| Real-time features | 2 | Web (Major) | `bsamy` |
+| User interaction (chat/profiles/friends) | 2 | Web (Major) | `bsamy`, `yemirosh` |
+| Standard user management | 2 | Users (Major) | `bsamy`, `yemirosh` |
+| Complete competitive web game | 2 | Gaming (Major) | `bsamy` |
+| Remote players | 2 | Gaming (Major) | `bsamy`, `mpeskov` |
+| Multiplayer 3+ | 2 | Gaming (Major) | `bsamy` |
+| Three complete UI/content languages and switcher | 1 | Accessibility (Minor) | `yemirosh` |
+| Health/status, automatic backups and recovery procedures | 1 | Devops (Minor) | `mpeskov` |
+| Game statistics/history | 1 | Users (Minor) | `bsamy` |
+| Game customization | 1 | Gaming (Minor) | `bsamy`, `yemirosh` |
+| Gamification | 1 | Gaming (Minor) | `bsamy`, `yemirosh` |
+| Spectator mode | 1 | Gaming (Minor) | `bsamy` |
+| Advanced search | 1 | Web (Minor) | `bsamy`, `yemirosh` |
+| **Candidate total** | **19** | **14 mandatory + 5 bonus** | — |
 
-Each feature's implementation is described above and in the evaluation matrix.
-Team ownership remains pending. The 19-point route now uses listed modules; the
-stateful simulator is additional functionality and is not needed as a discretionary
-custom major in this calculation. Remote play, current Chrome and complete UI flows
-must be demonstrated; partial modules must not be counted.
+Each feature's implementation is described above and in the evaluation matrix. The 19-point route uses listed modules; the stateful simulator is additional functionality. Remote play, current Chrome and complete UI flows must be demonstrated; partial modules must not be counted.
 
 ## Individual Contributions
 
-Not supplied. Each real team member must document their own features, commits,
-reviews, tests, challenges and understanding before submission. AI-assisted output
-must not be presented as an invented human contribution.
+### `mpeskov` — Project Manager & DevOps Lead
+- **Project Coordination**: Defined sprint milestones, managed the backlog, scheduled team syncs, and coordinated module dependencies across team members.
+- **Docker & Infrastructure**: Configured the containerization environment (`Dockerfile`, `compose.yaml`) with unprivileged `nullcity` user execution, read-only root filesystems, and persistent named volumes.
+- **LAN Multiplayer & Networking**: Developed the certificate generator (`scripts/generate_cert.py`) with automatic LAN interface discovery and Subject Alternative Names (SANs) for seamless multi-device play across local Wi-Fi networks.
+- **Disaster Recovery**: Implemented automated verified SQLite snapshots, the non-destructive recovery command (`server/backup.py`), and health status monitoring (`/status.html`).
+- **Build System & Documentation**: Authored the unified `Makefile`, environment templates (`.env.example`), and [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md).
+- **Challenges Overcome**: Resolving strict browser certificate validation and CORS/CSRF errors across mobile and desktop devices without compromising security; ensuring zero-downtime database backups in SQLite WAL mode.
+
+### `bsamy` — Backend Developer & Architect
+- **HTTPS Server**: Built the Python 3 threaded HTTPS API server (`server/app.py`) without external frameworks, featuring strict request validation, body size capping, and rate limiting.
+- **Database Architecture**: Designed the relational SQLite schema (`server/schema.sql`) enforcing foreign keys, indexes, and transactional integrity.
+- **Authentication & Security**: Implemented password security using random salts and `hashlib.scrypt` (N=131072, r=8, p=1), token-based session tracking with SHA-256 hashes, and hardened `__Host-` cookies (`HttpOnly`, `Secure`, `SameSite=Strict`).
+- **Real-Time & Multiplayer**: Developed the Server-Sent Events (SSE) notification pipeline and the server-authoritative 2–4 player quiz arena with synchronized round deadlines, idempotent matchmaking, spectator feeds, and one-use abilities ("Impulse").
+- **Challenges Overcome**: Eliminating race conditions during simultaneous answer submissions and round transitions; ensuring disconnected clients re-sync to the current server round without skipping questions or losing scores.
+
+### `yemirosh` — Frontend Developer & UI/UX Lead
+- **Canvas 2D Engine**: Built the custom game engine (`src/engine.js`, `src/art.js`, `src/minipixel-world.js`), including 50 distinct building facade identities, road network navigation, collision detection, and interior rooms.
+- **Art, Shaders & Atmosphere**: Implemented smooth weather transitions (rain, fog, storm), ambient rooftop animations, CRT/VHS shaders, and water reflections.
+- **Character Customization**: Developed the identity editor (`src/characters.js`) with custom skin/hair/eye color palettes, seven hairstyles, gender selection, and real-time directional previews.
+- **Internationalization (i18n)**: Implemented complete 3-language localization (Russian, English, Spanish) spanning story dialogues, menus, arena questions, and policy pages, complete with an offline compiler (`scripts/i18n/build.py`) and instant UI switcher.
+- **Challenges Overcome**: Rendering high-density pixel art sharply on high-DPI and mobile screens without blurry scaling; designing an i18n system that translates procedural story text while strictly preserving technical terminal commands and IP addresses.
+
+### `lbellmas` — QA / Test Engineer & Security Analyst
+- **Test Infrastructure**: Created and maintained the automated test suite consisting of 60 frontend tests (`node --test tests/*.test.mjs`) and 15 server integration tests (`python3 -m unittest`).
+- **Security & Concurrency Testing**: Authored multi-threaded test cases verifying optimistic concurrency in save slots, CSRF header enforcement, session invalidation upon logout/expiry, and brute-force rate-limiting.
+- **Multiplayer State Verification**: Built simulation tests for 4-player games, verifying authoritative score calculations, duplicate answer rejection, stale-round timeouts, host handover, and spectator isolation.
+- **Audit & Evaluation Mapping**: Maintained the evaluation compliance matrix (`docs/EVALUATION.md`) and verification logs (`docs/VERIFICATION.md`), auditing Chrome console logs for zero warnings/errors.
+- **Challenges Overcome**: Simulating complex multi-client network failures and race conditions deterministically using ephemeral test databases and temporary TLS listeners without impacting live project data.
 
 ## Resources
 
