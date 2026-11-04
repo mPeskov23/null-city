@@ -106,5 +106,53 @@
   "Сервер не ответил вовремя. Проверь соединение и повтори попытку.": [
     "The server did not respond in time. Check your connection and try again.",
     "El servidor no respondió a tiempo. Comprueba tu conexión e inténtalo de nuevo."
+  ],
+  "Конфиденциальность и данные (GDPR)": [
+    "Privacy and data (GDPR)",
+    "Privacidad y datos (RGPD)"
+  ],
+  "Согласно ст. 15–20 GDPR вы имеете право на доступ к персональным данным, их экспорт и полное удаление («право на забвение»). Выгрузка содержит ваш профиль, облачные сохранения, сообщения чата, друзей и историю матчей.": [
+    "Under Articles 15–20 of GDPR, you have the right to access, export, and fully erase your personal data (\"right to be forgotten\"). The export includes your profile, cloud saves, chat messages, friends, and match history.",
+    "Según los artículos 15–20 del RGPD, tienes derecho a acceder, exportar y suprimir por completo tus datos personales («derecho al olvido»). La exportación incluye tu perfil, partidas en la nube, mensajes de chat, amigos e historial de partidas."
+  ],
+  "Экспорт данных (JSON)": [
+    "Export data (JSON)",
+    "Exportar datos (JSON)"
+  ],
+  "Матчи (CSV)": [
+    "Matches (CSV)",
+    "Partidas (CSV)"
+  ],
+  "Удаление аккаунта": [
+    "Account deletion",
+    "Eliminación de la cuenta"
+  ],
+  "Безвозвратно удаляет учетную запись, пароль, профиль, аватар, переписку, облачные сохранения и результаты матчей. Действие необратимо.": [
+    "Permanently deletes the account, password, profile, avatar, chat messages, cloud saves, and match results. This action cannot be undone.",
+    "Elimina de forma permanente la cuenta, contraseña, perfil, avatar, mensajes de chat, partidas en la nube y resultados de partidas. Esta acción no se puede deshacer."
+  ],
+  "Удалить аккаунт и данные": [
+    "Delete account and data",
+    "Eliminar cuenta y datos"
+  ],
+  "Для подтверждения безвозвратного удаления аккаунта введите пароль:": [
+    "To confirm permanent account deletion, enter your password:",
+    "Para confirmar la eliminación definitiva de la cuenta, introduce tu contraseña:"
+  ],
+  "Внимание! Все данные вашего аккаунта будут стёрты навсегда. Продолжить?": [
+    "Warning! All data associated with your account will be permanently deleted. Continue?",
+    "¡Atención! Todos los datos de tu cuenta se eliminarán para siempre. ¿Continuar?"
+  ],
+  "Аккаунт и все персональные данные безвозвратно удалены.": [
+    "Account and all personal data have been permanently deleted.",
+    "La cuenta y todos los datos personales se han eliminado permanentemente."
+  ],
+  "Неверный пароль для подтверждения удаления.": [
+    "Incorrect password for deletion confirmation.",
+    "Contraseña incorrecta para confirmar la eliminación."
+  ],
+  "● АВТОНОМНЫЙ РЕЖИМ (PWA)": [
+    "● OFFLINE MODE (PWA)",
+    "● MODO SIN CONEXIÓN (RGPD)"
   ]
 }

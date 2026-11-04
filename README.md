@@ -219,15 +219,17 @@ score and one-use hint state. `answers`: unique room/user/round and accepted cho
 | City canvas engine, pixel assets, movement, interiors | `src/engine.js`, `src/art.js`, `src/places.js` | `yemirosh` |
 | Identity editor, layered original sprites | `src/characters.js`, `src/app.js` | `yemirosh` |
 | Multilingual system (RU/EN/ES) & switcher | `src/i18n.js`, `locales/`, `scripts/i18n/` | `yemirosh` |
+| Progressive Web App (PWA) & offline readiness | `manifest.webmanifest`, `sw.js`, `src/pwa.js`, `assets/icon-*.png` | `yemirosh`, `mpeskov` |
 | Story and stateful incident labs | `src/campaign.js`, `src/simulator.mjs` | `yemirosh`, `bsamy` |
 | Accounts, storage, social features, arena engine | `server/app.py`, `server/schema.sql` | `bsamy` |
+| GDPR compliance & right to erasure (account deletion) | `server/app.py`, `hub.html`, `src/hub.js`, `privacy.html` | `bsamy`, `lbellmas` |
 | Club UI, matchmaking lobby, and results | `hub.html`, `src/hub.js`, `src/hub.css` | `yemirosh`, `bsamy` |
 | TLS/container startup, Docker, backup & LAN SAN | `compose.yaml`, `deploy/`, `server/recovery.py`, `scripts/generate_cert.py` | `mpeskov` |
 | Test suite, concurrency & security verification | `tests/`, `Makefile` (`make test`), `docs/` | `lbellmas` |
 
 ## Modules
 
-The candidate route totals **19 points (14 mandatory + 5 bonus)**. Detailed requirements, evidence, dependencies and outstanding demonstrations are in `docs/EVALUATION.md`.
+The candidate route totals **21 points (14 mandatory + 7 bonus)**. Detailed requirements, evidence, dependencies and outstanding demonstrations are in `docs/EVALUATION.md`.
 
 | Candidate module | Points | Category | Team ownership |
 |---|---:|---|---|
@@ -237,6 +239,8 @@ The candidate route totals **19 points (14 mandatory + 5 bonus)**. Detailed requ
 | Complete competitive web game | 2 | Gaming (Major) | `bsamy` |
 | Remote players | 2 | Gaming (Major) | `bsamy`, `mpeskov` |
 | Multiplayer 3+ | 2 | Gaming (Major) | `bsamy` |
+| Support of a Progressive Web App (PWA) | 1 | Web (Minor) | `yemirosh`, `mpeskov` |
+| GDPR compliance options & account deletion | 1 | Cybersecurity (Minor) | `bsamy`, `lbellmas` |
 | Three complete UI/content languages and switcher | 1 | Accessibility (Minor) | `yemirosh` |
 | Health/status, automatic backups and recovery procedures | 1 | Devops (Minor) | `mpeskov` |
 | Game statistics/history | 1 | Users (Minor) | `bsamy` |
@@ -244,9 +248,9 @@ The candidate route totals **19 points (14 mandatory + 5 bonus)**. Detailed requ
 | Gamification | 1 | Gaming (Minor) | `bsamy`, `yemirosh` |
 | Spectator mode | 1 | Gaming (Minor) | `bsamy` |
 | Advanced search | 1 | Web (Minor) | `bsamy`, `yemirosh` |
-| **Candidate total** | **19** | **14 mandatory + 5 bonus** | — |
+| **Candidate total** | **21** | **14 mandatory + 7 bonus** | — |
 
-Each feature's implementation is described above and in the evaluation matrix. The 19-point route uses listed modules; the stateful simulator is additional functionality. Remote play, current Chrome and complete UI flows must be demonstrated; partial modules must not be counted.
+Each feature's implementation is described above and in the evaluation matrix. The 21-point route uses listed modules; the stateful simulator is additional functionality. Remote play, current Chrome and complete UI flows must be demonstrated; partial modules must not be counted.
 
 ## Individual Contributions
 
@@ -254,6 +258,7 @@ Each feature's implementation is described above and in the evaluation matrix. T
 - **Project Coordination**: Defined sprint milestones, managed the backlog, scheduled team syncs, and coordinated module dependencies across team members.
 - **Docker & Infrastructure**: Configured the containerization environment (`Dockerfile`, `compose.yaml`) with unprivileged `nullcity` user execution, read-only root filesystems, and persistent named volumes.
 - **LAN Multiplayer & Networking**: Developed the certificate generator (`scripts/generate_cert.py`) with automatic LAN interface discovery and Subject Alternative Names (SANs) for seamless multi-device play across local Wi-Fi networks.
+- **PWA & Static Serving**: Configured static caching policies, Service Worker scope permissions (`Service-Worker-Allowed: /`), and deployment verification across desktop and mobile browsers.
 - **Disaster Recovery**: Implemented automated verified SQLite snapshots, the non-destructive recovery command (`server/backup.py`), and health status monitoring (`/status.html`).
 - **Build System & Documentation**: Authored the unified `Makefile`, environment templates (`.env.example`), and [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md).
 - **Challenges Overcome**: Resolving strict browser certificate validation and CORS/CSRF errors across mobile and desktop devices without compromising security; ensuring zero-downtime database backups in SQLite WAL mode.
@@ -262,18 +267,22 @@ Each feature's implementation is described above and in the evaluation matrix. T
 - **HTTPS Server**: Built the Python 3 threaded HTTPS API server (`server/app.py`) without external frameworks, featuring strict request validation, body size capping, and rate limiting.
 - **Database Architecture**: Designed the relational SQLite schema (`server/schema.sql`) enforcing foreign keys, indexes, and transactional integrity.
 - **Authentication & Security**: Implemented password security using random salts and `hashlib.scrypt` (N=131072, r=8, p=1), token-based session tracking with SHA-256 hashes, and hardened `__Host-` cookies (`HttpOnly`, `Secure`, `SameSite=Strict`).
+- **GDPR Compliance & Erasure**: Implemented the `DELETE /api/me` endpoint with mandatory password re-authentication, cascading complete data erasure across all tables, cookie invalidation, and comprehensive data portability export (`/api/export`).
 - **Real-Time & Multiplayer**: Developed the Server-Sent Events (SSE) notification pipeline and the server-authoritative 2–4 player quiz arena with synchronized round deadlines, idempotent matchmaking, spectator feeds, and one-use abilities ("Impulse").
 - **Challenges Overcome**: Eliminating race conditions during simultaneous answer submissions and round transitions; ensuring disconnected clients re-sync to the current server round without skipping questions or losing scores.
 
 ### `yemirosh` — Frontend Developer & UI/UX Lead
 - **Canvas 2D Engine**: Built the custom game engine (`src/engine.js`, `src/art.js`, `src/minipixel-world.js`), including 50 distinct building facade identities, road network navigation, collision detection, and interior rooms.
 - **Art, Shaders & Atmosphere**: Implemented smooth weather transitions (rain, fog, storm), ambient rooftop animations, CRT/VHS shaders, and water reflections.
+- **Progressive Web App (PWA)**: Authored `manifest.webmanifest`, implemented the Service Worker (`sw.js`) for cache-first offline asset serving and single-player execution, crafted pixel-perfect themed app icons, and built the client PWA lifecycle script (`src/pwa.js`).
 - **Character Customization**: Developed the identity editor (`src/characters.js`) with custom skin/hair/eye color palettes, seven hairstyles, gender selection, and real-time directional previews.
 - **Internationalization (i18n)**: Implemented complete 3-language localization (Russian, English, Spanish) spanning story dialogues, menus, arena questions, and policy pages, complete with an offline compiler (`scripts/i18n/build.py`) and instant UI switcher.
 - **Challenges Overcome**: Rendering high-density pixel art sharply on high-DPI and mobile screens without blurry scaling; designing an i18n system that translates procedural story text while strictly preserving technical terminal commands and IP addresses.
 
 ### `lbellmas` — QA / Test Engineer & Security Analyst
-- **Test Infrastructure**: Created and maintained the automated test suite consisting of 60 frontend tests (`node --test tests/*.test.mjs`) and 15 server integration tests (`python3 -m unittest`).
+- **Test Infrastructure**: Created and maintained the automated test suite consisting of 60 frontend tests (`node --test tests/*.test.mjs`) and 17 server integration tests (`python3 -m unittest`).
+- **GDPR & Erasure Verification**: Designed integration tests verifying correct password rejection, immediate database sanitization, foreign key cascades, and session cookie clearance upon account deletion.
+- **PWA Asset Verification**: Added automated tests checking MIME types, headers, and manifest structures for all PWA assets.
 - **Security & Concurrency Testing**: Authored multi-threaded test cases verifying optimistic concurrency in save slots, CSRF header enforcement, session invalidation upon logout/expiry, and brute-force rate-limiting.
 - **Multiplayer State Verification**: Built simulation tests for 4-player games, verifying authoritative score calculations, duplicate answer rejection, stale-round timeouts, host handover, and spectator isolation.
 - **Audit & Evaluation Mapping**: Maintained the evaluation compliance matrix (`docs/EVALUATION.md`) and verification logs (`docs/VERIFICATION.md`), auditing Chrome console logs for zero warnings/errors.
@@ -303,8 +312,8 @@ No Terraria assets are copied; all artwork and character sprites are original as
 
 This is an evaluation-preparation build, not a production security service. The
 server is single-process; SSE has one global invalidation channel. There is no
-email verification, recovery, 2FA, moderation UI, automatic account deletion,
-WAF/Vault, ORM or certification-complete curriculum. The question bank is small
+email verification, recovery, 2FA, moderation UI, WAF/Vault, ORM or
+certification-complete curriculum. The question bank is small
 and educational, not an exam dump. Offline campaign saves are user-controlled and
 never determine the competitive arena leaderboard. Remote device verification,
 team attribution/history and an independent security/accessibility review are

@@ -228,4 +228,39 @@ class ServerTests(unittest.TestCase):
         status,data,_=self.request('GET','export',cookie=self.users[0][1]);self.assertEqual(status,200);self.assertNotIn('password',json.dumps(data));self.assertNotIn('token',json.dumps(data))
         self.assertEqual(self.request('POST','rooms',{'name':'Bad','capacity':9,'topic':'mixed','duration':30},self.users[0][1])[0],400)
 
+    def test_gdpr_account_deletion_and_data_erasure(self):
+        credentials={'email':'gdpr_target@test.invalid','name':'GDPR User','password':'Gdpr-deletion-pass-2026!'}
+        status,user,cookie=self.request('POST','register',credentials)
+        self.assertEqual(status,200)
+        uid=user['id']
+
+        self.request('POST','messages',{'body':'Sensitive message to be erased'},cookie)
+        valid_payload={'version':1,'done':['first'],'xp':100,'spentXp':0,'notes':'my personal notes','appearance':{}}
+        self.request('PUT','save',{'revision':0,'save':valid_payload},cookie)
+
+        exp_status,exp_data,_=self.request('GET','export',cookie=cookie)
+        self.assertEqual(exp_status,200)
+        self.assertIn('gdprNotice',exp_data)
+        self.assertEqual(exp_data['save']['xp'],100)
+        self.assertEqual(len(exp_data['messages']),1)
+
+        wrong_status,wrong_body,_=self.request('DELETE','me',{'password':'Wrong-password-here!2026'},cookie)
+        self.assertEqual(wrong_status,401)
+        self.assertEqual(wrong_body['error'],'Неверный пароль для подтверждения удаления.')
+
+        self.assertEqual(self.request('GET','me',cookie=cookie)[0],200)
+
+        del_status,del_body,cleared_cookie=self.request('DELETE','me',{'password':'Gdpr-deletion-pass-2026!'},cookie)
+        self.assertEqual(del_status,200)
+        self.assertTrue(del_body['ok'])
+        self.assertEqual(cleared_cookie,'__Host-nullcity=')
+
+        self.assertEqual(self.request('GET','me',cookie=cookie)[0],401)
+
+        with app.db() as c:
+            self.assertIsNone(c.execute('SELECT 1 FROM users WHERE id=?',(uid,)).fetchone())
+            self.assertIsNone(c.execute('SELECT 1 FROM sessions WHERE user_id=?',(uid,)).fetchone())
+            self.assertIsNone(c.execute('SELECT 1 FROM saves WHERE user_id=?',(uid,)).fetchone())
+            self.assertEqual(c.execute('SELECT count(*) FROM messages WHERE user_id=?',(uid,)).fetchone()[0],0)
+
 if __name__=='__main__': unittest.main()

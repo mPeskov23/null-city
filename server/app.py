@@ -218,7 +218,8 @@ class Handler(BaseHTTPRequestHandler):
                     c.commit();return self.events(uid)
                 result=self.api(c,u,method,path,data)
             if method!='GET': changed()
-            self.respond(200,result, {'Set-Cookie': '__Host-nullcity=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'} if path=='/api/logout' and method=='POST' else None)
+            clear_cookie = (path=='/api/logout' and method=='POST') or (path=='/api/me' and method=='DELETE')
+            self.respond(200,result, {'Set-Cookie': '__Host-nullcity=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'} if clear_cookie else None)
         except ApiError as e: self.respond(e.status,{'error':e.message})
         except sqlite3.IntegrityError: self.respond(409,{'error':'Операция конфликтует с существующими данными.'})
         except (BrokenPipeError,ConnectionResetError,TimeoutError,ssl.SSLEOFError,ssl.SSLZeroReturnError): pass
@@ -248,6 +249,13 @@ class Handler(BaseHTTPRequestHandler):
             if method=='PUT':
                 name=text(data,'name',2,32);bio=text(data,'bio',0,300)
                 c.execute('UPDATE users SET name=?,bio=? WHERE id=?',(name,bio,uid));return {'ok':True}
+            if method=='DELETE':
+                password=data.get('password','')
+                candidate=hash_password(password,u['password'].split(':')[0])
+                if not hmac.compare_digest(candidate,u['password']): raise ApiError(401,'Неверный пароль для подтверждения удаления.')
+                c.execute("UPDATE rooms SET state='cancelled' WHERE host=? AND state='waiting'",(uid,))
+                c.execute('DELETE FROM users WHERE id=?',(uid,))
+                return {'ok':True,'message':'Аккаунт и все персональные данные удалены.'}
         if path=='/api/logout' and method=='POST':
             c.execute('DELETE FROM sessions WHERE token=?',(self.session_token,));return {'ok':True}
         if path=='/api/save':
@@ -407,7 +415,8 @@ class Handler(BaseHTTPRequestHandler):
             return {'history':history,'leaderboard':board,'wins':wins,'draws':draws,'losses':len(outcomes)-wins-draws,'xp':xp,'level':1+xp//100,'badges':badges,'daily':{'progress':min(today,3),'target':3,'reward':40,'complete':today>=3,'resetsAt':(now()//86400+1)*86400},'nextLevelXp':100-xp%100,'rank':['Стажёр','Оператор','Аналитик','Хранитель сети'][min(3,xp//300)]}
         if path=='/api/export' and method=='GET':
             s=c.execute('SELECT payload FROM saves WHERE user_id=?',(uid,)).fetchone()
-            return {'profile':profile(u,True),'save':json.loads(s[0]) if s else None,'messages':[dict(r) for r in c.execute('SELECT body,created FROM messages WHERE user_id=?',(uid,))],'matches':[dict(r) for r in c.execute('SELECT room_id,score FROM players WHERE user_id=?',(uid,))]}
+            friends_rows=c.execute('SELECT f.*,u.name FROM friends f JOIN users u ON u.id=CASE WHEN f.sender=? THEN f.recipient ELSE f.sender END WHERE sender=? OR recipient=?',(uid,uid,uid)).fetchall()
+            return {'profile':profile(u,True),'save':json.loads(s[0]) if s else None,'messages':[dict(r) for r in c.execute('SELECT body,created FROM messages WHERE user_id=?',(uid,))],'matches':[dict(r) for r in c.execute('SELECT room_id,score FROM players WHERE user_id=?',(uid,))],'friends':[dict(r) for r in friends_rows],'gdprNotice':'Экспорт персональных данных согласно регламенту GDPR (ст. 15 и 20).','exportedAt':now()}
         raise ApiError(404,'Метод или ресурс не найден.')
     def events(self,uid):
         # One event stream per user limits idle worker consumption.
@@ -423,15 +432,17 @@ class Handler(BaseHTTPRequestHandler):
                 c.execute('UPDATE users SET seen=? WHERE id=?',(now(),uid))
             self.wfile.write(f'data: {seen}\n\n'.encode());self.wfile.flush()
     def static(self,path):
-        allowed={'/':'index.html','/hub.html':'hub.html','/privacy.html':'privacy.html','/terms.html':'terms.html','/status.html':'status.html'}
+        allowed={'/':'index.html','/hub.html':'hub.html','/privacy.html':'privacy.html','/terms.html':'terms.html','/status.html':'status.html','/manifest.webmanifest':'manifest.webmanifest','/sw.js':'sw.js','/assets/icon-192.png':'assets/icon-192.png','/assets/icon-512.png':'assets/icon-512.png','/assets/icon-maskable-192.png':'assets/icon-maskable-192.png','/assets/icon-maskable-512.png':'assets/icon-maskable-512.png','/assets/apple-touch-icon.png':'assets/apple-touch-icon.png'}
         if path.startswith('/src/') and re.fullmatch(r'/src/[a-zA-Z0-9_.-]+\.(js|mjs|css)',path): name=path[1:]
         elif re.fullmatch(r'/assets/nulls/(bg-room-svg|char-(?:01-desert|02-ocean|03-ice|04-lava|05-cyber|06-gas|07-crystal|08-jungle|09-void|10-hive))\.svg',path): name=path[1:]
         elif re.fullmatch(r'/assets/city/(terrain|buildings|long_buildings|vehicles_game|characters_game|parks)\.png',path): name=path[1:]
         elif path in ['/assets/signal-lost/opening-cover.png','/assets/characters/main_characters_walkcycles.png','/assets/characters/npc_8_roles_walkcycles.png','/assets/terrain/asphalt_paving_additional_tiles.png','/assets/terrain/asphalt_cobblestone_full_tileset.png','/assets/terrain/stone-atlas.png','/assets/terrain/stone-platform.png','/assets/terrain/road-atlas.png','/assets/objects/midnight-ramen.png','/assets/signal-lost/tape-room.png','/assets/signal-lost/portraits.png']: name=path[1:]
         else: name=allowed.get(path)
         if not name or not (ROOT/name).is_file(): raise ApiError(404,'Страница не найдена.')
-        mime='image/svg+xml' if name.endswith('.svg') else 'image/png' if name.endswith('.png') else 'text/css' if name.endswith('.css') else 'text/javascript' if name.endswith(('.js','.mjs')) else 'text/html'
-        self.respond(200,(ROOT/name).read_bytes(),mime=mime+'; charset=utf-8')
+        mime='image/svg+xml' if name.endswith('.svg') else 'image/png' if name.endswith('.png') else 'text/css' if name.endswith('.css') else 'application/manifest+json' if name.endswith('.webmanifest') else 'text/javascript' if name.endswith(('.js','.mjs')) else 'text/html'
+        headers={'Service-Worker-Allowed':'/','Cache-Control':'no-cache'} if name=='sw.js' else None
+        if headers: self.respond(200,(ROOT/name).read_bytes(),headers,mime=mime+'; charset=utf-8' if not mime.startswith('image/') else mime)
+        else: self.respond(200,(ROOT/name).read_bytes(),mime=mime+'; charset=utf-8' if not mime.startswith('image/') else mime)
 
 if __name__=='__main__':
     init_db()
