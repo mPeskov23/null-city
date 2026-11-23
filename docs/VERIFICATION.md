@@ -1,3 +1,46 @@
+# Email 2FA verification — 2026-11-23
+
+Scope: opt-in email two-factor authentication, the `smtp` (Mailpit) container, recovery codes
+and their documentation ([SMTP-2FA.md](SMTP-2FA.md)). Everything below was run on this date.
+
+## Done
+
+- **Backend: 70 tests pass in Docker**, rerun after every code change below (`tests/test_twofa.py` holds 53 of them: login/enable/disable
+  cycles, replay, concurrency, attempt and account limits, recovery codes, SMTP down, key handling,
+  migration of an existing database, mail construction and real TLS handshakes).
+- **Frontend: 70 tests pass** (`npm test`, including the 10 in `tests/twofa.test.mjs`).
+- **Scripted real Docker flow passed** against the real stack (`nullcity` and `smtp` containers), with mail
+  delivered over STARTTLS and the server certificate verified. The script is not a substitute for the manual
+  test recorded below.
+- **After the last step above, a "Download .txt" button was added** to the recovery-codes screen
+  (`src/hub.js`, `hub.html`; the file is built in the browser). No automated test clicks it.
+- **Security audit by an AI agent.** Its findings were fixed (several are covered by the
+  "audit regressions" tests). The fixes were **not independently re-audited** by a person or a second tool.
+- **Manual 2FA test by the student**: reported fully working (browser and individual steps not recorded).
+- **GDPR confirmation mails**: real export and erasure mails received in Mailpit over verified STARTTLS;
+  with `smtp` stopped both operations still succeed and the failure is logged. The "Matches (CSV)" button sends none.
+- **Application TLS certificate**: unchanged after container recreation (`CERT_AUTODETECT=0` in compose);
+  regenerated when `HOST_IP` changes or within 30 days of expiry.
+- **Page load checked in headless Firefox: 3/3.** This shows the pages load; it exercises no 2FA interaction.
+
+## Not done
+
+- **Chrome** (the subject's target browser): no check, no console audit of the 2FA screens.
+- **PWA offline** behaviour (service worker, install, offline load).
+- A **real relay provider** (for example Gmail with an app password): delivery to a real mailbox has never been tried.
+  The relay chain was exercised only toward a second disposable Mailpit.
+- Remote devices and an independent security/accessibility review remain outstanding, as in earlier entries.
+
+## Known limits recorded during this review
+
+- The second factor is the same mailbox, 2FA is optional, there is no password reset and no email verification at sign-up.
+- `DELETE /api/me` requires only the password (no 2FA code); attempts are limited to 5 per 5 minutes per account.
+- A lost response to `POST /api/2fa/enable` leaves 2FA on with codes the user never saw.
+- `docker compose down -v`, `make fclean` and `make re` erase accounts as well as SMTP secrets; losing
+  `twofa.key` invalidates recovery codes (see [RECOVERY.md](RECOVERY.md)).
+
+---
+
 # Registration and multiplayer audit — 21 October 2026
 
 - 15 Python integration scenarios pass using temporary accounts, a separate SQLite database and verified TLS. Added concurrent duplicate registration, invalid fields, indistinguishable wrong-password/unknown-user errors, independent login sessions, logout invalidation and session expiry.
