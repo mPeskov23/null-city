@@ -10,3 +10,8 @@ CREATE TABLE IF NOT EXISTS answers(room_id INTEGER, user_id INTEGER, round INTEG
 CREATE INDEX IF NOT EXISTS session_expiry ON sessions(expires);
 CREATE INDEX IF NOT EXISTS messages_time ON messages(created);
 CREATE INDEX IF NOT EXISTS players_user ON players(user_id);
+CREATE TABLE IF NOT EXISTS twofa_challenges(id INTEGER PRIMARY KEY, token TEXT NOT NULL UNIQUE, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, purpose TEXT NOT NULL CHECK(purpose IN('login','enable','disable')), code TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, expires INTEGER NOT NULL, used INTEGER NOT NULL DEFAULT 0 CHECK(used IN(0,1)));
+CREATE TABLE IF NOT EXISTS twofa_recovery(user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, code TEXT NOT NULL, used INTEGER NOT NULL DEFAULT 0 CHECK(used IN(0,1)), PRIMARY KEY(user_id,code));
+CREATE TABLE IF NOT EXISTS twofa_log(user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, kind TEXT NOT NULL CHECK(kind IN('mail','try')), at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS twofa_log_user ON twofa_log(user_id,kind,at);
+CREATE INDEX IF NOT EXISTS twofa_challenge_expiry ON twofa_challenges(expires);

@@ -154,5 +154,217 @@
   "● АВТОНОМНЫЙ РЕЖИМ (PWA)": [
     "● OFFLINE MODE (PWA)",
     "● MODO SIN CONEXIÓN (RGPD)"
+  ],
+  "Подтверждение входа": [
+    "Confirm sign-in",
+    "Confirmar el inicio de sesión"
+  ],
+  "Мы отправили код на адрес": [
+    "We sent a code to",
+    "Hemos enviado un código a"
+  ],
+  "Код действует 10 минут.": [
+    "The code is valid for 10 minutes.",
+    "El código es válido durante 10 minutos."
+  ],
+  "Шестизначный код из письма": [
+    "Six-digit code from the email",
+    "Código de seis dígitos del correo"
+  ],
+  "Код из письма": [
+    "Code from the email",
+    "Código del correo"
+  ],
+  "Резервный код": [
+    "Recovery code",
+    "Código de recuperación"
+  ],
+  "Подтвердить": [
+    "Confirm",
+    "Confirmar"
+  ],
+  "Отправить код ещё раз": [
+    "Resend code",
+    "Reenviar código"
+  ],
+  "Использовать резервный код": [
+    "Use a recovery code",
+    "Usar un código de recuperación"
+  ],
+  "Использовать код из письма": [
+    "Use the code from the email",
+    "Usar el código del correo"
+  ],
+  "Назад": [
+    "Back",
+    "Atrás"
+  ],
+  "Повторная отправка через": [
+    "You can resend in",
+    "Podrás reenviar en"
+  ],
+  "Код отправлен. Проверь почту.": [
+    "Code sent. Check your email.",
+    "Código enviado. Revisa tu correo."
+  ],
+  "Новый код отправлен. Проверь почту.": [
+    "A new code was sent. Check your email.",
+    "Se envió un código nuevo. Revisa tu correo."
+  ],
+  "Отправляем код…": [
+    "Sending the code…",
+    "Enviando el código…"
+  ],
+  "Проверяем код…": [
+    "Checking the code…",
+    "Comprobando el código…"
+  ],
+  "Введи шестизначный код из письма.": [
+    "Enter the six-digit code from the email.",
+    "Introduce el código de seis dígitos del correo."
+  ],
+  "Введи резервный код.": [
+    "Enter a recovery code.",
+    "Introduce un código de recuperación."
+  ],
+  "Двухфакторная защита": [
+    "Two-factor authentication",
+    "Autenticación en dos pasos"
+  ],
+  "Статус: включена": [
+    "Status: on",
+    "Estado: activada"
+  ],
+  "Статус: выключена": [
+    "Status: off",
+    "Estado: desactivada"
+  ],
+  "При входе мы отправим одноразовый код на ваш email. Резервные коды помогут, если почта недоступна.": [
+    "When you sign in, we will email you a one-time code. Recovery codes help if your email is unavailable.",
+    "Al iniciar sesión te enviaremos un código de un solo uso por correo. Los códigos de recuperación sirven si no puedes acceder al correo."
+  ],
+  "Пароль для подтверждения": [
+    "Password to confirm",
+    "Contraseña para confirmar"
+  ],
+  "Включить 2FA": [
+    "Turn on 2FA",
+    "Activar 2FA"
+  ],
+  "Отключить 2FA": [
+    "Turn off 2FA",
+    "Desactivar 2FA"
+  ],
+  "Отмена": [
+    "Cancel",
+    "Cancelar"
+  ],
+  "Резервные коды": [
+    "Recovery codes",
+    "Códigos de recuperación"
+  ],
+  "Сохрани эти коды сейчас: они показываются только один раз. Каждый код работает один раз.": [
+    "Save these codes now: they are shown only once. Each code works once.",
+    "Guarda estos códigos ahora: solo se muestran una vez. Cada código funciona una sola vez."
+  ],
+  "Скопировать коды": [
+    "Copy codes",
+    "Copiar códigos"
+  ],
+  "Недопустимые символы в пароле.": [
+    "Invalid characters in the password.",
+    "Caracteres no válidos en la contraseña."
+  ],
+  "Скачать .txt": [
+    "Download .txt",
+    "Descargar .txt"
+  ],
+  "Файл с кодами скачан. Храни его в надёжном месте.": [
+    "Code file downloaded. Keep it somewhere safe.",
+    "Archivo de códigos descargado. Guárdalo en un lugar seguro."
+  ],
+  "Я сохранил коды": [
+    "I have saved the codes",
+    "He guardado los códigos"
+  ],
+  "Двухфакторная защита включена. Сохрани резервные коды.": [
+    "Two-factor authentication is on. Save your recovery codes.",
+    "La autenticación en dos pasos está activada. Guarda tus códigos de recuperación."
+  ],
+  "Двухфакторная защита отключена.": [
+    "Two-factor authentication is off.",
+    "La autenticación en dos pasos está desactivada."
+  ],
+  "Коды скопированы.": [
+    "Codes copied.",
+    "Códigos copiados."
+  ],
+  "Не удалось скопировать. Выдели коды вручную.": [
+    "Copy failed. Select the codes manually.",
+    "No se pudo copiar. Selecciona los códigos manualmente."
+  ],
+  "Двухфакторная защита (email)": [
+    "Two-factor authentication (email)",
+    "Autenticación en dos pasos (correo)"
+  ],
+  "Если включить двухфакторную защиту, при входе на ваш email отправляется одноразовый код. Мы храним только хеши кодов и резервных кодов, а не сами коды. Код действует 10 минут и перестаёт работать после использования. Адрес email используется для входа, отправки этих писем и подтверждений экспорта или удаления данных. Резервные коды показываются один раз; отключить защиту можно в профиле.": [
+    "If you turn on two-factor authentication, a one-time code is emailed to you at sign-in. We store only hashes of the codes and recovery codes, not the codes themselves. A code is valid for 10 minutes and stops working once used. Your email address is used to sign in, to send these messages and to confirm data exports or deletion. Recovery codes are shown once; you can turn protection off in your profile.",
+    "Si activas la autenticación en dos pasos, al iniciar sesión se envía a tu correo un código de un solo uso. Solo guardamos los hashes de los códigos y de los códigos de recuperación, no los códigos en sí. Un código es válido durante 10 minutos y deja de funcionar tras usarse. Tu correo se usa para iniciar sesión, enviar estos mensajes y confirmar la exportación o eliminación de datos. Los códigos de recuperación se muestran una vez; puedes desactivar la protección en tu perfil."
+  ],
+  "Письмо с кодом не отправлено. Дождись таймера и нажми «Отправить код ещё раз» или используй резервный код.": [
+    "The code email was not sent. Wait for the timer, then press “Resend code”, or use a recovery code.",
+    "El correo con el código no se envió. Espera al temporizador y pulsa «Reenviar código», o usa un código de recuperación."
+  ],
+  "Письмо с кодом не отправлено. Введи резервный код или попробуй позже.": [
+    "The code email was not sent. Enter a recovery code or try again later.",
+    "El correo con el código no se envió. Introduce un código de recuperación o inténtalo más tarde."
+  ],
+  "Лимит писем с кодом на этот час исчерпан. Используй резервный код или попробуй позже.": [
+    "The limit of code emails for this hour has been reached. Use a recovery code or try again later.",
+    "Se alcanzó el límite de correos con código de esta hora. Usa un código de recuperación o inténtalo más tarde."
+  ],
+  "Лимит писем с кодом на этот час исчерпан. Введи резервный код или попробуй позже.": [
+    "The limit of code emails for this hour has been reached. Enter a recovery code or try again later.",
+    "Se alcanzó el límite de correos con código de esta hora. Introduce un código de recuperación o inténtalo más tarde."
+  ],
+  "Лимит писем с кодом на этот час исчерпан. Попробуй позже.": [
+    "The limit of code emails for this hour has been reached. Try again later.",
+    "Se alcanzó el límite de correos con código de esta hora. Inténtalo más tarde."
+  ],
+  "Введи код из письма или резервный код.": [
+    "Enter the code from the email or a recovery code.",
+    "Introduce el código del correo o un código de recuperación."
+  ],
+  "Код из письма или резервный код": [
+    "Code from the email or a recovery code",
+    "Código del correo o código de recuperación"
+  ],
+  "Код недействителен или истёк. Начни заново.": [
+    "The code is invalid or has expired. Start again.",
+    "El código no es válido o ha caducado. Empieza de nuevo."
+  ],
+  "Повторная отправка письма пока недоступна.": [
+    "Resending the email is not available yet.",
+    "Aún no se puede reenviar el correo."
+  ],
+  "Не удалось отправить письмо с кодом. Попробуй позже.": [
+    "The code email could not be sent. Try again later.",
+    "No se pudo enviar el correo con el código. Inténtalo más tarde."
+  ],
+  "Не удалось отправить письмо с кодом. Используй резервный код.": [
+    "The code email could not be sent. Use a recovery code.",
+    "No se pudo enviar el correo con el código. Usa un código de recuperación."
+  ],
+  "Слишком много неверных кодов. Подожди несколько минут или используй резервный код.": [
+    "Too many wrong codes. Wait a few minutes or use a recovery code.",
+    "Demasiados códigos incorrectos. Espera unos minutos o usa un código de recuperación."
+  ],
+  "Неверный код.": [
+    "Wrong code.",
+    "Código incorrecto."
+  ],
+  "Неверный пароль.": [
+    "Wrong password.",
+    "Contraseña incorrecta."
   ]
 }
