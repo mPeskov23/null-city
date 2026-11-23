@@ -15,6 +15,8 @@ up:
 	@test -f .env || (echo "$(YELLOW)Creating .env from .env.example...$(RESET)" && cp .env.example .env)
 	@echo "$(GREEN)Starting $(NAME) with Docker Compose...$(RESET)"
 	docker compose up --build -d
+	@P=$$(sed -n 's/^PORT=//p' .env | tail -1); M=$$(sed -n 's/^MAIL_UI_PORT=//p' .env | tail -1); \
+	printf "$(GREEN)Game:  https://localhost:%s$(RESET)\n$(GREEN)Mails: https://localhost:%s$(RESET)\n" "$${P:-8443}" "$${M:-8025}"
 
 # Stop Docker Compose containers
 down:

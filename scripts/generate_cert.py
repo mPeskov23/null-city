@@ -62,15 +62,18 @@ def build_sans(extra_hosts=None):
     dns = {'localhost'}
     ips = {'127.0.0.1', '0.0.0.0'}
 
-    try:
-        h = socket.gethostname()
-        if h:
-            dns.add(h)
-    except Exception:
-        pass
+    # A container's hostname and bridge IP change whenever it is recreated and are never
+    # used by browsers: compose disables detection so the certificate stays stable.
+    if os.environ.get('CERT_AUTODETECT', '1') != '0':
+        try:
+            h = socket.gethostname()
+            if h:
+                dns.add(h)
+        except Exception:
+            pass
 
-    for ip in detect_lan_ips():
-        ips.add(ip)
+        for ip in detect_lan_ips():
+            ips.add(ip)
 
     for item in (extra_hosts or []):
         for part in item.split(','):
@@ -87,6 +90,9 @@ def cert_has_all_hosts(cert_path, dns, ips):
     if not cert_path.exists():
         return False
     try:
+        # Renew when expired or expiring within 30 days.
+        if subprocess.run(['openssl', 'x509', '-checkend', '2592000', '-noout', '-in', str(cert_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode != 0:
+            return False
         out = subprocess.check_output(['openssl', 'x509', '-text', '-noout', '-in', str(cert_path)], text=True)
         for d in dns:
             if f'DNS:{d}' not in out and d not in out:

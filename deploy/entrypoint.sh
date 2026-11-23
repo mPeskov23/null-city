@@ -12,4 +12,8 @@ if [ ! -f /app/data/tls/cert.pem ]; then
   fi
   openssl req -x509 -newkey rsa:3072 -sha256 -nodes -days 365 -subj '/CN=localhost' -addext "subjectAltName=${SAN}" -keyout /app/data/tls/key.pem -out /app/data/tls/cert.pem >/dev/null 2>&1
 fi
+# Email 2FA: the smtp-init job shares the generated SMTP login through a read-only
+# volume, so no password is needed in .env. Explicit env values take precedence.
+if [ -z "${SMTP_USER:-}" ] && [ -r /run/smtp/user ]; then SMTP_USER=$(cat /run/smtp/user); export SMTP_USER; fi
+if [ -z "${SMTP_PASSWORD:-}" ] && [ -r /run/smtp/password ]; then SMTP_PASSWORD=$(cat /run/smtp/password); export SMTP_PASSWORD; fi
 exec python3 server/app.py
