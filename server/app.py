@@ -26,6 +26,10 @@ try:
     from server.recovery import BackupService
 except ModuleNotFoundError:
     from recovery import BackupService
+try:
+    from server import mailer
+except ModuleNotFoundError:
+    import mailer
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = Path(os.environ.get('DATABASE_PATH', ROOT / 'data/nullcity.sqlite3'))
@@ -39,11 +43,22 @@ HASH_SLOTS = threading.BoundedSemaphore(2)
 RATE_LOCK = threading.Lock()
 RATES = OrderedDict()
 SESSION_TTL = 86400
+TWOFA_TTL = 600
+TWOFA_ATTEMPTS = 5
+TWOFA_COOLDOWN = 30
+TWOFA_TRIES = (10, 900)   # per-account wrong-code budget: count, window seconds
+TWOFA_MAILS = (6, 3600)   # per-account mail budget: count, window seconds
+DEAD_CHALLENGE = 'Код недействителен или истёк. Начни заново.'
+MAIL_WAIT = 'Повторная отправка письма пока недоступна.'
+MAIL_LIMIT = 'Лимит писем с кодом на этот час исчерпан. Попробуй позже.'
+KEY_LOCK = threading.Lock()
+KEYS = {}
+RECOVERY_ALPHABET = 'abcdefghjkmnpqrstuvwxyz23456789'
 BACKUPS = None
 STARTED = time.monotonic()
 
 class ApiError(Exception):
-    def __init__(self, status, message): self.status, self.message = status, message
+    def __init__(self, status, message, **extra): self.status, self.message, self.extra = status, message, extra
 
 def now(): return int(time.time())
 @contextmanager
@@ -67,6 +82,10 @@ def init_db():
             c.execute('ALTER TABLE players ADD COLUMN ready INTEGER NOT NULL DEFAULT 0')
         if 'rematch_of' not in {r[1] for r in c.execute('PRAGMA table_info(rooms)')}:
             c.execute('ALTER TABLE rooms ADD COLUMN rematch_of INTEGER REFERENCES rooms(id)')
+        if 'twofa' not in {r[1] for r in c.execute('PRAGMA table_info(users)')}:
+            c.execute('ALTER TABLE users ADD COLUMN twofa INTEGER NOT NULL DEFAULT 0')
+        twofa_purge(c)
+        twofa_key()  # fail at startup, not on the first login
         c.execute('CREATE UNIQUE INDEX IF NOT EXISTS one_rematch ON rooms(rematch_of) WHERE rematch_of IS NOT NULL')
 
 def changed():
@@ -87,6 +106,8 @@ def rate(key, limit, window):
 
 def hash_password(password, salt=None):
     salt = salt or secrets.token_hex(16)
+    try: password.encode()
+    except UnicodeEncodeError: raise ApiError(400,'Недопустимые символы в пароле.')
     with HASH_SLOTS:
         digest = hashlib.scrypt(password.encode(), salt=bytes.fromhex(salt), n=131072, r=8, p=1, maxmem=256*1024*1024).hex()
     return salt+':'+digest
@@ -105,8 +126,151 @@ def number(data,key,lo,hi):
 def profile(row, private=False):
     p={k:row[k] for k in ['id','name','bio','created']}
     p.update(online=row['seen']>now()-45,avatar=f"/api/avatar/{row['id']}" if row['avatar'] else None)
-    if private: p['email']=row['email']
+    if private: p.update(email=row['email'],twofa=bool(row['twofa']))
     return p
+
+def twofa_key():
+    # Codes are only 6 digits, so stored digests must be keyed: the key never lives inside the database file.
+    env=os.environ.get('TWOFA_SECRET','').strip()
+    if env:
+        if len(env)<32: raise RuntimeError('TWOFA_SECRET must be at least 32 characters.')
+        return env.encode()
+    path=DB.parent/'twofa.key'
+    with KEY_LOCK:
+        if path not in KEYS:
+            if not path.exists():
+                # Complete file or nothing: a crash must never leave an empty key at the final path.
+                temp=path.with_name(f'.twofa.key.{os.getpid()}.{secrets.token_hex(4)}')
+                try:
+                    fd=os.open(temp,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600)
+                    with os.fdopen(fd,'w') as f: f.write(secrets.token_hex(32));f.flush();os.fsync(f.fileno())
+                    try: os.link(temp,path)
+                    except FileExistsError: pass
+                finally: temp.unlink(missing_ok=True)
+            try: key=bytes.fromhex(path.read_text().strip())
+            except ValueError: key=b''
+            if len(key)!=32: raise RuntimeError(f'{path} must hold 32 bytes as hex; remove it to generate a new key (this invalidates pending codes).')
+            KEYS[path]=key
+        return KEYS[path]
+
+def mac(kind,*parts): return hmac.new(twofa_key(),'\0'.join((kind,)+parts).encode(),hashlib.sha256).hexdigest()
+
+def twofa_purge(c):
+    c.execute('DELETE FROM twofa_challenges WHERE expires<?',(now(),))
+    c.execute('DELETE FROM twofa_log WHERE at<?',(now()-max(TWOFA_TRIES[1],TWOFA_MAILS[1]),))
+
+def email_hint(email):
+    local,_,domain=email.partition('@')
+    return local[:1]+'***@'+domain
+
+def lang_of(data):
+    lang=data.get('lang','en')
+    return lang if lang in mailer.LANGS else 'en'
+
+def twofa_begin(c):
+    c.commit();c.execute('BEGIN IMMEDIATE')  # never nest inside the write transaction opened by user()
+
+def twofa_new_code(): return f'{secrets.randbelow(10**6):06d}'
+
+def twofa_deliver(email,code,lang,purpose):
+    """SMTP I/O: callers must hold no SQLite transaction. Returns False instead of raising."""
+    try: mailer.send(email,code,lang,purpose,TWOFA_TTL//60);return True
+    except mailer.MailError as e:
+        print('2FA mail failed:',str(e)[:60],flush=True);return False
+
+def gdpr_confirm(email,kind,lang):
+    """Confirms a data operation by mail in the background: a mail outage never blocks a GDPR right."""
+    if not mailer.enabled(): return
+    def run():
+        try: mailer.notify(email,kind,lang)
+        except mailer.MailError as e: print('GDPR mail failed:',str(e)[:60],flush=True)
+    threading.Thread(target=run,daemon=True).start()
+
+def twofa_mail_budget(c,uid,t):
+    """Returns (seconds left in the resend cooldown, whether the hourly mail budget still has room)."""
+    last=c.execute("SELECT max(at) FROM twofa_log WHERE user_id=? AND kind='mail'",(uid,)).fetchone()[0]
+    wait=max(0,TWOFA_COOLDOWN-(t-last)) if last else 0
+    return wait,c.execute("SELECT count(*) FROM twofa_log WHERE user_id=? AND kind='mail' AND at>?",(uid,t-TWOFA_MAILS[1])).fetchone()[0]<TWOFA_MAILS[0]
+
+def twofa_relax(c,uid,t):
+    """A verified code proves the mailbox works: lift the resend cooldown but keep the hourly count."""
+    c.execute("UPDATE twofa_log SET at=at-? WHERE user_id=? AND kind='mail' AND at>?",(TWOFA_COOLDOWN,uid,t-TWOFA_COOLDOWN))
+
+def twofa_issue(c,u,purpose,lang,fail_open=False):
+    """Creates a challenge and mails its code. Without fail_open an unsendable mail is a 429/503;
+    with it the challenge is still returned (mailFailed) so a recovery code can complete it.
+    A challenge whose mail was not sent gets a random digest, so no 6-digit code can ever match it."""
+    uid=u['id'];t=now();token=secrets.token_urlsafe(32);code=twofa_new_code();th=mac('tok',token)
+    twofa_begin(c);twofa_purge(c)
+    try:
+        wait,allowed=twofa_mail_budget(c,uid,t)
+        if not fail_open and not allowed: raise ApiError(429,MAIL_LIMIT)
+        if not fail_open and wait: raise ApiError(429,MAIL_WAIT,retryAfter=wait)
+        send=allowed and not wait
+        if send: c.execute("INSERT INTO twofa_log VALUES(?,'mail',?)",(uid,t))
+        c.execute('INSERT INTO twofa_challenges(token,user_id,purpose,code,expires) VALUES(?,?,?,?,?)',(th,uid,purpose,mac('code',th,code if send else secrets.token_hex(16)),t+TWOFA_TTL))
+    except BaseException: c.rollback();raise
+    c.commit()
+    sent=send and twofa_deliver(u['email'],code,lang,purpose)
+    if send and not sent:
+        c.execute('UPDATE twofa_challenges SET code=? WHERE token=? AND used=0',(mac('code',th,secrets.token_hex(16)),th));c.commit()
+        if not fail_open: raise ApiError(503,'Не удалось отправить письмо с кодом. Попробуй позже.',retryAfter=TWOFA_COOLDOWN)
+    out={'challenge':token,'expiresIn':TWOFA_TTL,'emailHint':email_hint(u['email'])}
+    if not sent:
+        out['mailFailed']=True
+        if not allowed: out['mailLimited']=True
+        else: out['retryAfter']=wait or TWOFA_COOLDOWN
+    return out
+
+def twofa_resend(c,token,lang):
+    """The stored code changes only after the new mail was accepted, so a failed delivery keeps the old code usable."""
+    if not isinstance(token,str) or len(token)>100 or not token.isascii(): raise ApiError(400,'Нужен challenge.')
+    t=now();code=twofa_new_code();th=mac('tok',token)
+    twofa_begin(c)
+    try:
+        row=c.execute("SELECT c.id,c.user_id,u.email FROM twofa_challenges c JOIN users u ON u.id=c.user_id WHERE c.token=? AND c.purpose='login' AND c.used=0 AND c.expires>?",(th,t)).fetchone()
+        if not row: raise ApiError(410,DEAD_CHALLENGE)
+        wait,allowed=twofa_mail_budget(c,row['user_id'],t)
+        if not allowed: raise ApiError(429,MAIL_LIMIT)
+        if wait: raise ApiError(429,MAIL_WAIT,retryAfter=wait)
+        c.execute("INSERT INTO twofa_log VALUES(?,'mail',?)",(row['user_id'],t))  # reserved before SMTP: a concurrent resend meets the cooldown
+    except BaseException: c.rollback();raise
+    c.commit()
+    if not twofa_deliver(row['email'],code,lang,'login'): raise ApiError(503,'Не удалось отправить письмо с кодом. Используй резервный код.',retryAfter=TWOFA_COOLDOWN)
+    twofa_begin(c);t=now()
+    if c.execute('UPDATE twofa_challenges SET code=?,attempts=0,expires=? WHERE id=? AND used=0 AND expires>?',(mac('code',th,code),t+TWOFA_TTL,row['id'],t)).rowcount!=1: c.rollback();raise ApiError(410,DEAD_CHALLENGE)
+    c.commit()
+    return {'ok':True,'expiresIn':TWOFA_TTL}
+
+def recovery_normal(code): return re.sub(r'[\s-]','',code).lower()
+
+def twofa_check(c,purpose,token,code,uid=None):
+    """Verifies a challenge code or recovery code and consumes the challenge, all inside one
+    BEGIN IMMEDIATE transaction that is left OPEN on success for the caller to finish.
+    Every failure commits the attempt counter before raising, because db() rolls back on exceptions.
+    The account-wide budget counts failed 6-digit codes only and is checked first, so a locked
+    request burns nothing and never extends the lock; recovery codes stay usable while locked."""
+    if not isinstance(token,str) or not isinstance(code,str) or len(token)>100 or len(code)>64 or not token.isascii() or not code.isascii(): raise ApiError(400,'Нужны challenge и code.')
+    t=now();th=mac('tok',token);code=code.strip()
+    twofa_begin(c)
+    row=c.execute('SELECT * FROM twofa_challenges WHERE token=? AND purpose=? AND (? IS NULL OR user_id=?) AND used=0 AND expires>? AND attempts<?',(th,purpose,uid,uid,t,TWOFA_ATTEMPTS)).fetchone()
+    if not row: c.rollback();raise ApiError(410,DEAD_CHALLENGE)
+    owner=row['user_id'];digits=re.fullmatch(r'\d{6}',code)
+    if digits and c.execute("SELECT count(*) FROM twofa_log WHERE user_id=? AND kind='try' AND at>?",(owner,t-TWOFA_TRIES[1])).fetchone()[0]>=TWOFA_TRIES[0]:
+        c.rollback();raise ApiError(429,'Слишком много неверных кодов. Подожди несколько минут или используй резервный код.')
+    c.execute('UPDATE twofa_challenges SET attempts=attempts+1 WHERE id=?',(row['id'],))
+    if digits: ok=hmac.compare_digest(mac('code',th,code),row['code'])
+    else:
+        ok=False;wanted=mac('rec',str(owner),recovery_normal(code))
+        for r in c.execute('SELECT code FROM twofa_recovery WHERE user_id=? AND used=0',(owner,)).fetchall():
+            ok|=hmac.compare_digest(wanted,r['code'])  # no early exit
+        if ok: ok=c.execute('UPDATE twofa_recovery SET used=1 WHERE user_id=? AND code=? AND used=0',(owner,wanted)).rowcount==1
+    if not ok:
+        if digits: c.execute("INSERT INTO twofa_log VALUES(?,'try',?)",(owner,t))
+        c.commit();raise ApiError(403,'Неверный код.')
+    if c.execute('UPDATE twofa_challenges SET used=1 WHERE id=? AND used=0',(row['id'],)).rowcount!=1: c.rollback();raise ApiError(410,DEAD_CHALLENGE)
+    twofa_relax(c,owner,t)
+    return row
 
 def valid_save(s):
     if not isinstance(s,dict) or s.get('version')!=1: raise ApiError(400,'Неизвестная версия сохранения.')
@@ -213,14 +377,18 @@ class Handler(BaseHTTPRequestHandler):
                 return self.respond(200,{'status':'ok'})
             with db() as c:
                 if path in ['/api/register','/api/login'] and method=='POST': return self.auth(c,path,data)
+                if path in ['/api/login/2fa','/api/login/2fa/resend'] and method=='POST': return self.login_2fa(c,path,data)
                 u=self.user(c);uid=u['id']
                 if path=='/api/events' and method=='GET':
                     c.commit();return self.events(uid)
                 result=self.api(c,u,method,path,data)
+            # Only after the commit: never confirm an operation that was rolled back.
+            if path=='/api/export' and method=='GET': gdpr_confirm(u['email'],'export',lang_of({k:v[0] for k,v in parse_qs(urlsplit(self.path).query).items()}))
+            if path=='/api/me' and method=='DELETE': gdpr_confirm(u['email'],'erasure',lang_of(data))
             if method!='GET': changed()
             clear_cookie = (path=='/api/logout' and method=='POST') or (path=='/api/me' and method=='DELETE')
             self.respond(200,result, {'Set-Cookie': '__Host-nullcity=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0'} if clear_cookie else None)
-        except ApiError as e: self.respond(e.status,{'error':e.message})
+        except ApiError as e: self.respond(e.status,{'error':e.message,**e.extra})
         except sqlite3.IntegrityError: self.respond(409,{'error':'Операция конфликтует с существующими данными.'})
         except (BrokenPipeError,ConnectionResetError,TimeoutError,ssl.SSLEOFError,ssl.SSLZeroReturnError): pass
         except Exception as e:
@@ -238,10 +406,59 @@ class Handler(BaseHTTPRequestHandler):
             u=c.execute('SELECT * FROM users WHERE email=?',(email,)).fetchone()
             candidate=hash_password(password,u['password'].split(':')[0] if u else '0'*32)
             if not u or not hmac.compare_digest(candidate,u['password']): raise ApiError(401,'Неверный email или пароль.')
-        u=c.execute('SELECT * FROM users WHERE email=?',(email,)).fetchone();token=secrets.token_urlsafe(32)
+            # Decide on 2FA under the write lock and open the session in the same transaction, so a
+            # concurrent enable (which revokes sessions) cannot interleave. No hashing happens here.
+            twofa_begin(c)
+            u=c.execute('SELECT * FROM users WHERE id=? AND password=?',(u['id'],u['password'])).fetchone()
+            if not u: c.rollback();raise ApiError(401,'Неверный email или пароль.')
+            if u['twofa']:
+                rate(('2fa-mail',self.client_address[0]),10,300)
+                return self.respond(200,{'twofa':True,**twofa_issue(c,u,'login',lang_of(data),fail_open=True)})
+            return self.start_session(c,u)
+        u=c.execute('SELECT * FROM users WHERE email=?',(email,)).fetchone()
+        self.start_session(c,u)
+    def start_session(self,c,u):
+        token=secrets.token_urlsafe(32)
         c.execute('DELETE FROM sessions WHERE expires<?',(now(),))
         c.execute('INSERT INTO sessions VALUES(?,?,?)',(hashlib.sha256(token.encode()).hexdigest(),u['id'],now()+SESSION_TTL));c.commit()
         self.respond(200,profile(u,True),{'Set-Cookie':f'__Host-nullcity={token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age={SESSION_TTL}'})
+    def login_2fa(self,c,path,data):
+        rate(('2fa',self.client_address[0]),20,300)
+        if path.endswith('/resend'):
+            rate(('2fa-mail',self.client_address[0]),10,300)
+            return self.respond(200,twofa_resend(c,data.get('challenge'),lang_of(data)))
+        row=twofa_check(c,'login',data.get('challenge'),data.get('code'))
+        self.start_session(c,c.execute('SELECT * FROM users WHERE id=?',(row['user_id'],)).fetchone())
+    def twofa(self,c,u,path,data):
+        uid=u['id'];lang=lang_of(data);step=path[len('/api/2fa/'):]
+        c.commit()  # release the write lock taken by user() before hashing or SMTP
+        if step not in ('setup','enable','disable'): raise ApiError(404,'Метод или ресурс не найден.')
+        rate(('2fa',uid),20,300)
+        if step=='enable':
+            if u['twofa']: raise ApiError(409,'Двухфакторная защита уже включена.')
+            twofa_check(c,'enable',data.get('challenge'),data.get('code'),uid)
+            if c.execute('UPDATE users SET twofa=1 WHERE id=? AND twofa=0',(uid,)).rowcount!=1: raise ApiError(409,'Двухфакторная защита уже включена.')  # checked under the write lock
+            codes=[''.join(secrets.choice(RECOVERY_ALPHABET) for _ in range(10)) for _ in range(8)]
+            c.execute('DELETE FROM twofa_recovery WHERE user_id=?',(uid,))
+            c.execute('DELETE FROM twofa_challenges WHERE user_id=?',(uid,))
+            c.executemany('INSERT INTO twofa_recovery(user_id,code) VALUES(?,?)',[(uid,mac('rec',str(uid),code)) for code in codes])
+            c.execute('DELETE FROM sessions WHERE user_id=? AND token<>?',(uid,self.session_token))
+            return {'ok':True,'recoveryCodes':[code[:5]+'-'+code[5:] for code in codes]}
+        password=data.get('password','')
+        if not isinstance(password,str) or not 12<=len(password)<=128: raise ApiError(400,'Пароль: от 12 до 128 символов.')
+        if step=='setup' and u['twofa']: raise ApiError(409,'Двухфакторная защита уже включена.')
+        if step=='disable' and not u['twofa']: raise ApiError(409,'Двухфакторная защита не включена.')
+        first=step=='setup' or 'challenge' not in data
+        rate(('2fa-password' if first else '2fa-password-confirm',uid),5 if first else 10,300)
+        if not hmac.compare_digest(hash_password(password,u['password'].split(':')[0]),u['password']): raise ApiError(403,'Неверный пароль.')
+        if first:
+            rate(('2fa-mail',self.client_address[0]),10,300)
+            return twofa_issue(c,u,'enable' if step=='setup' else 'disable',lang,fail_open=step=='disable')
+        twofa_check(c,'disable',data.get('challenge'),data.get('code'),uid)
+        c.execute('UPDATE users SET twofa=0 WHERE id=?',(uid,))
+        c.execute('DELETE FROM twofa_recovery WHERE user_id=?',(uid,))
+        c.execute('DELETE FROM twofa_challenges WHERE user_id=?',(uid,))
+        return {'ok':True}
     def api(self,c,u,method,path,data):
         uid=u['id']
         if path=='/api/me':
@@ -251,11 +468,15 @@ class Handler(BaseHTTPRequestHandler):
                 c.execute('UPDATE users SET name=?,bio=? WHERE id=?',(name,bio,uid));return {'ok':True}
             if method=='DELETE':
                 password=data.get('password','')
-                candidate=hash_password(password,u['password'].split(':')[0])
-                if not hmac.compare_digest(candidate,u['password']): raise ApiError(401,'Неверный пароль для подтверждения удаления.')
+                if not isinstance(password,str) or not 12<=len(password)<=128: raise ApiError(400,'Пароль: от 12 до 128 символов.')
+                c.commit()  # release the write lock taken by user() before hashing
+                rate(('erase-password',uid),5,300)
+                # 403, not 401: the session is still valid, so the UI must not sign the user out.
+                if not hmac.compare_digest(hash_password(password,u['password'].split(':')[0]),u['password']): raise ApiError(403,'Неверный пароль для подтверждения удаления.')
                 c.execute("UPDATE rooms SET state='cancelled' WHERE host=? AND state='waiting'",(uid,))
                 c.execute('DELETE FROM users WHERE id=?',(uid,))
                 return {'ok':True,'message':'Аккаунт и все персональные данные удалены.'}
+        if path.startswith('/api/2fa/') and method=='POST': return self.twofa(c,u,path,data)
         if path=='/api/logout' and method=='POST':
             c.execute('DELETE FROM sessions WHERE token=?',(self.session_token,));return {'ok':True}
         if path=='/api/save':
@@ -414,6 +635,7 @@ class Handler(BaseHTTPRequestHandler):
             if wins: badges.append('Победитель смены')
             return {'history':history,'leaderboard':board,'wins':wins,'draws':draws,'losses':len(outcomes)-wins-draws,'xp':xp,'level':1+xp//100,'badges':badges,'daily':{'progress':min(today,3),'target':3,'reward':40,'complete':today>=3,'resetsAt':(now()//86400+1)*86400},'nextLevelXp':100-xp%100,'rank':['Стажёр','Оператор','Аналитик','Хранитель сети'][min(3,xp//300)]}
         if path=='/api/export' and method=='GET':
+            rate(('export',uid),10,3600)  # each export sends a confirmation mail
             s=c.execute('SELECT payload FROM saves WHERE user_id=?',(uid,)).fetchone()
             friends_rows=c.execute('SELECT f.*,u.name FROM friends f JOIN users u ON u.id=CASE WHEN f.sender=? THEN f.recipient ELSE f.sender END WHERE sender=? OR recipient=?',(uid,uid,uid)).fetchall()
             return {'profile':profile(u,True),'save':json.loads(s[0]) if s else None,'messages':[dict(r) for r in c.execute('SELECT body,created FROM messages WHERE user_id=?',(uid,))],'matches':[dict(r) for r in c.execute('SELECT room_id,score FROM players WHERE user_id=?',(uid,))],'friends':[dict(r) for r in friends_rows],'gdprNotice':'Экспорт персональных данных согласно регламенту GDPR (ст. 15 и 20).','exportedAt':now()}

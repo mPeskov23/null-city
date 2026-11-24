@@ -1,11 +1,10 @@
 /* Service Worker for NULL CITY PWA */
 'use strict';
 
-const CACHE_NAME = 'null-city-pwa-v1';
+const CACHE_NAME = 'null-city-pwa-v5';
 
 const CORE_ASSETS = [
   '/',
-  '/index.html',
   '/hub.html',
   '/privacy.html',
   '/terms.html',

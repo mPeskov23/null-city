@@ -245,8 +245,14 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(len(exp_data['messages']),1)
 
         wrong_status,wrong_body,_=self.request('DELETE','me',{'password':'Wrong-password-here!2026'},cookie)
-        self.assertEqual(wrong_status,401)
+        self.assertEqual(wrong_status,403)
         self.assertEqual(wrong_body['error'],'Неверный пароль для подтверждения удаления.')
+        for bad in [None,123,[],{},'short','x'*129,'\ud800'*12]:
+            self.assertEqual(self.request('DELETE','me',{'password':bad},cookie)[0],400,bad)
+        with app.RATE_LOCK: app.RATES.clear()
+        self.assertEqual([self.request('DELETE','me',{'password':'Wrong-password-here!2026'},cookie)[0] for _ in range(6)],[403]*5+[429])
+        self.assertEqual(self.request('DELETE','me',{'password':'Gdpr-deletion-pass-2026!'},cookie)[0],429)
+        with app.RATE_LOCK: app.RATES.clear()
 
         self.assertEqual(self.request('GET','me',cookie=cookie)[0],200)
 

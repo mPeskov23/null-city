@@ -10,7 +10,9 @@ settings = ROOT / '.env'
 allowed = {
     'PUBLIC_ORIGIN', 'PORT', 'BIND', 'DATABASE_PATH',
     'TLS_CERT', 'TLS_KEY', 'BACKUP_INTERVAL_SECONDS', 'BACKUP_RETAIN',
-    'HOST_IP', 'ALLOWED_ORIGINS'
+    'HOST_IP', 'ALLOWED_ORIGINS',
+    'SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASSWORD', 'SMTP_FROM', 'SMTP_TLS', 'SMTP_CA',
+    'TWOFA_SECRET'
 }
 if settings.exists():
     for line in settings.read_text().splitlines():
